@@ -4,6 +4,8 @@ namespace app;
 /**
  * Class BaseModel
  * @package app
+ *
+ * Base Model object for DB models
  */
 abstract class BaseModel
 {

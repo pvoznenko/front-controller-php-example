@@ -7,6 +7,8 @@ use MusicPlayer\models\Users;
 /**
  * Class UsersController
  * @package MusicPlayer\controllers
+ *
+ * Controller responsible for actions on user
  */
 class UsersController extends BaseController
 {

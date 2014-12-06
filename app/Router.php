@@ -7,6 +7,8 @@ use app\exceptions\NotFoundException;
 
 /**
  * Class Router
+ *
+ * Class Router responsibility is limited to checking if a stored Route matches the URI associated to a specific Request object.
  */
 class Router
 {

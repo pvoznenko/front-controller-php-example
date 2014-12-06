@@ -7,6 +7,8 @@ use app\exceptions\BadRequestException;
 
 /**
  * Class Route
+ *
+ * Route class ties a method \ uri path to a given action controller.
  */
 class Route implements RouteInterface
 {

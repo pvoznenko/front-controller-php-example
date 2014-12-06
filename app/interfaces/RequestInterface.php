@@ -4,6 +4,8 @@ namespace app\interfaces;
 /**
  * Interface RequestInterface
  * @package interfaces
+ *
+ * Request encapsulates an incoming URI along with an array of parameters.
  */
 interface RequestInterface
 {

@@ -34,6 +34,8 @@ class FrontController
     }
 
     /**
+     * Method runs requests and handle exceptions, so that exceptions could be rendered with correct HTTP codes
+     *
      * @param RequestInterface $request
      * @param ResponseInterface $response
      */

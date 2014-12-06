@@ -3,8 +3,19 @@ namespace MusicPlayer\models;
 
 use app\BaseModel;
 
+/**
+ * Class Users
+ * @package MusicPlayer\models
+ *
+ * Model represents action on User in DB
+ */
 class Users extends BaseModel
 {
+    /**
+     * Table name
+     *
+     * @var string
+     */
     protected $tableName = 'users';
 
     /**

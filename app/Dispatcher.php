@@ -7,6 +7,8 @@ use app\interfaces\ResponseInterface;
 
 /**
  * Class Dispatcher
+ *
+ * Dispatcher for Route, Request and Response objects.
  */
 class Dispatcher
 {

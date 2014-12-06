@@ -5,6 +5,8 @@ namespace app;
  * Class DB
  * @package app
  *
+ * Class DB handle connection
+ *
  * @method \PDOStatement prepare(string $statement) - PDOs prepare method
  * @method \PDOStatement query(string $statement) - PDOs query method
  * @method int exec(string $statement) - PDOs execute method

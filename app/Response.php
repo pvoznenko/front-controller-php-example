@@ -7,6 +7,8 @@ use app\interfaces\ResponseInterface;
 
 /**
  * Class Response
+ *
+ * The Response class allows to stack up HTTP headers to send them back to the client additionally with json content.
  */
 class Response implements ResponseInterface
 {

@@ -4,6 +4,8 @@ namespace app\interfaces;
 /**
  * Interface ResponseInterface
  * @package interfaces
+ *
+ * The Response allows to stack up HTTP headers to send them back to the client additionally with json content.
  */
 interface ResponseInterface
 {

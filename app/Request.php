@@ -6,6 +6,8 @@ use app\interfaces\RequestInterface;
 
 /**
  * Class Request
+ *
+ * The Request class encapsulates an incoming URI along with an array of parameters.
  */
 class Request implements RequestInterface
 {

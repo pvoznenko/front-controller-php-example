@@ -3,6 +3,8 @@ namespace app;
 
 /**
  * Class Singleton
+ *
+ * Abstract class for creating Singleton objects
  */
 abstract class Singleton
 {
