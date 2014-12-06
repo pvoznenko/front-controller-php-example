@@ -1,6 +1,8 @@
 <?php
 
+/**
+ * Bellow you can see all possible routes existing for following test application
+ */
 return [
-    new app\Route('GET', '/test/(?<id>[0-9]+)', "MusicPlayer\\controllers\\TestController"),
-    new app\Route('POST', '/address', "Acme\\Library\\Controller\\TestController")
+    new app\Route('POST', '/users/authentication', "MusicPlayer\\controllers\\UsersController", 'authentication')
 ];

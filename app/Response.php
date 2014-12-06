@@ -86,11 +86,11 @@ class Response implements ResponseInterface
     /**
      * Will publish existing headers
      *
-     * @param string $message - message to output, default empty
+     * @param array $message - message to output as json
      *
      * @return bool - if headers already sent will return false, otherwise true
      */
-    public function send($message = '')
+    public function send(array $message = null)
     {
         if (headers_sent()) {
             return false;
@@ -98,6 +98,11 @@ class Response implements ResponseInterface
 
         foreach($this->getHeaders() as $header) {
             header($this->getVersion() . ' ' . $header, true);
+        }
+
+        if (!empty($message)) {
+            header('Content-Type: application/json');
+            $message = json_encode($message);
         }
 
         return (bool)(print $message);

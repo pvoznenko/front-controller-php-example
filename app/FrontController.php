@@ -65,7 +65,7 @@ class FrontController
             $message = $error->getMessage();
 
             error_log($message);
-            $response->addHeader($header)->send($message);
+            $response->addHeader($header)->send(['error' => $message]);
         }
     }
 }

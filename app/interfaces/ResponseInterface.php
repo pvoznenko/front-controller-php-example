@@ -19,11 +19,11 @@ interface ResponseInterface
     /**
      * Will publish existing headers
      *
-     * @param string $message - message to output, default empty
+     * @param array $message - message to output as json
      *
      * @return bool - if headers already sent will return false, otherwise true
      */
-    public function send($message = '');
+    public function send(array $message = null);
 
     /**
      * Checks if requested mime type supported by response
