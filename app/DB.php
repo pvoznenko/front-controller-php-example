@@ -24,7 +24,7 @@ class DB extends Singleton
      */
     protected function __construct()
     {
-        $this->db = new \PDO('sqlite:' . ROOT . '/tmp/musicPlayer.DB');
+        $this->db = new \PDO('sqlite:' . DB_FILE_PATH);
         $this->db->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
 
         /**

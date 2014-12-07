@@ -2,6 +2,7 @@
 define('ROOT', dirname(__DIR__));
 
 require ROOT . '/app/ClassLoader.php';
+require ROOT . '/app/config/config.php';
 
 app\ClassLoader::register(ROOT);
 
