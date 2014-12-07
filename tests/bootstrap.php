@@ -19,6 +19,7 @@ register_shutdown_function(function() use ($pid) {
 define('ROOT', current(explode('tests', __DIR__)));
 
 // More bootstrap code
+require_once ROOT . 'tests/BaseWebTestClass.php';
 require_once ROOT . '/vendor/autoload.php';
 require_once ROOT . '/app/config/config.php';
 

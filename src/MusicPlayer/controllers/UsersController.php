@@ -14,6 +14,11 @@ class UsersController extends BaseController
 {
     /**
      * Current method fake user authentication and response with auth token that needed for further manipulations
+     *
+     * This method brakes rule of idempotent since on each request it will generate new outcome, but as I wrote this
+     * method made only for test purposes. On real application I will implement normal user authentication.
+     *
+     * Will send response with status 201 and json: {token: "auth_token"}
      */
     public function authentication()
     {

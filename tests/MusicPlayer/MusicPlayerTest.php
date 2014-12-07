@@ -1,20 +1,10 @@
 <?php
 namespace tests\MusicPlayer;
 
-use Guzzle\Http\Client;
+use tests\BaseWebTestClass;
 
-class MusicPlayerTest extends \PHPUnit_Framework_TestCase
+class MusicPlayerTest extends BaseWebTestClass
 {
-    /**
-     * @var Client
-     */
-    protected $client;
-
-    public function setUp()
-    {
-        $this->client = new Client('http://' . WEB_SERVER_HOST .':' . WEB_SERVER_PORT);
-    }
-
     /**
      * Test possibility to get auth token from server
      *
@@ -28,4 +18,4 @@ class MusicPlayerTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($response->getStatusCode(), 201);
         $this->assertTrue(isset($decodedResponse['token']));
     }
-} 
+}
