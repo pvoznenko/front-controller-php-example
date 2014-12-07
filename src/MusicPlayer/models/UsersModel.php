@@ -4,12 +4,12 @@ namespace MusicPlayer\models;
 use app\BaseModel;
 
 /**
- * Class Users
+ * Class UsersModel
  * @package MusicPlayer\models
  *
- * Model represents action on User in DB
+ * Model represents action on Users in DB
  */
-class Users extends BaseModel
+class UsersModel extends BaseModel
 {
     /**
      * Table name

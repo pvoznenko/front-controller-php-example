@@ -39,9 +39,9 @@ interface RequestInterface
     public function getParams();
 
     /**
-     * Get Accept MIME types
+     * Get list of raw data from the request
      *
-     * @param string
+     * @param array
      */
-    public function getMime();
+    public function getRawData();
 } 

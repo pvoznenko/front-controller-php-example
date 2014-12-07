@@ -18,6 +18,11 @@ abstract class BaseController
     protected $response;
 
     /**
+     * @var RequestInterface
+     */
+    protected $request;
+
+    /**
      * Method handle execution of controller's action specified in Route object
      *
      * @param string $action - name of method that should be executed
@@ -27,6 +32,7 @@ abstract class BaseController
     public function execute($action, RequestInterface $request, ResponseInterface $response)
     {
         $this->response = $response;
+        $this->request = $request;
 
         call_user_func_array([$this, $action], $request->getParams());
     }

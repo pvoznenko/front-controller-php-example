@@ -6,6 +6,7 @@ use app\interfaces\ResponseInterface;
 use app\exceptions\NotFoundException;
 use app\exceptions\BadRequestException;
 use app\exceptions\NotAcceptableException;
+use app\exceptions\UnauthorizedException;
 
 /**
  * Class FrontController
@@ -53,6 +54,9 @@ class FrontController
                 case $error instanceof \InvalidArgumentException:
                 case $error instanceof BadRequestException:
                     $header = '400 Bad Request';
+                    break;
+                case $error instanceof UnauthorizedException:
+                    $header = '401 Unauthorized';
                     break;
                 case $error instanceof NotFoundException:
                     $header = '404 Page Not Found';

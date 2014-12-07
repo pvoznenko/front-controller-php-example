@@ -2,13 +2,13 @@
 namespace MusicPlayer\controllers;
 
 use app\BaseController;
-use MusicPlayer\models\Users;
+use MusicPlayer\models\UsersModel;
 
 /**
  * Class UsersController
  * @package MusicPlayer\controllers
  *
- * Controller responsible for actions on user
+ * Controller responsible for actions on users
  */
 class UsersController extends BaseController
 {
@@ -27,7 +27,7 @@ class UsersController extends BaseController
          */
         $token = bin2hex(mcrypt_create_iv(22, MCRYPT_DEV_URANDOM));
 
-        (new Users())->addUser($token);
+        (new UsersModel)->addUser($token);
 
         $this->response->addHeader('201 Created')->send(['token' => $token]);
     }

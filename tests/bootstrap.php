@@ -12,17 +12,30 @@ echo sprintf('%s - Web server started on %s:%d with PID %d', date('r'), WEB_SERV
 
 // Kill the web server when the process ends
 register_shutdown_function(function() use ($pid) {
+    cleanUpDb();
+
     echo sprintf('%s - Killing process with ID %d', date('r'), $pid), PHP_EOL;
     exec('kill ' . $pid);
 });
 
-define('ROOT', current(explode('tests', __DIR__)));
+define('ROOT', dirname(__DIR__));
 
 // More bootstrap code
-require_once ROOT . 'tests/BaseWebTestClass.php';
+require_once ROOT . '/tests/BaseWebTestClass.php';
 require_once ROOT . '/vendor/autoload.php';
 require_once ROOT . '/app/config/config.php';
 
-if (is_readable(DB_FILE_PATH)) {
+/**
+ * Will remove existing DB for test purpose
+ */
+function cleanUpDb()
+{
+    if (!is_readable(DB_FILE_PATH)) {
+        return;
+    }
+
+    echo 'Removing DB at:', DB_FILE_PATH, PHP_EOL;
     unlink(DB_FILE_PATH);
 }
+
+cleanUpDb();

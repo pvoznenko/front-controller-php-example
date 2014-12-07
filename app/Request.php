@@ -26,13 +26,6 @@ class Request implements RequestInterface
     protected $method = '';
 
     /**
-     * Accept MIME types
-     *
-     * @var string
-     */
-    protected $mime = '';
-
-    /**
      * List of parameters in request
      *
      * @var array
@@ -40,22 +33,40 @@ class Request implements RequestInterface
     protected $params = [];
 
     /**
+     * List of raw request data
+     *
+     * @var array
+     */
+    protected $rawData = [];
+
+    /**
      * @param string $uri - requested uri
      * @param string $method - requested method, like GET, POST, etc.
-     * @param string $mime - HTTP Accept MIME type header
-     *
-     * @throws NotAcceptableException
+     * @param array $rawData - list of raw request data
      */
-    public function __construct($uri, $method, $mime)
+    public function __construct($uri, $method, array $rawData)
     {
         $this->uri = $uri;
         $this->method = $method;
-        $this->mime = $mime;
+
+        /**
+         * Since PUT not in PHP global variables we need to read stream by our self
+         */
+        if ($method === 'PUT') {
+            parse_str(file_get_contents('php://input'), $rawData['PUT']);
+        }
+
+        $this->rawData = $rawData;
     }
 
-    public function getMime()
+    /**
+     * Get list of raw data from the request
+     *
+     * @return array
+     */
+    public function getRawData()
     {
-        return $this->mime;
+        return $this->rawData;
     }
 
     /**

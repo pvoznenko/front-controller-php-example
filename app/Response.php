@@ -118,7 +118,13 @@ class Response implements ResponseInterface
      */
     public function isRequestedMimeSupported(RequestInterface $request)
     {
-        $acceptMimeType = $request->getMime();
+        $requestData = $request->getRawData();
+
+        if (!isset($requestData['HTTP_ACCEPT'])) {
+            return false;
+        }
+
+        $acceptMimeType = $requestData['HTTP_ACCEPT'];
 
         foreach($this->supportedMimeTypes as $mime) {
             if (strstr($acceptMimeType, $mime) !== false) {
