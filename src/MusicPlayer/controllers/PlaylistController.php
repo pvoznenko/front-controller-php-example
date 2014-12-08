@@ -20,11 +20,28 @@ class PlaylistController extends MusicPlayerAuthController
      * If playlist id specified, then it will return only following playlist
      *
      * @param int|null $playlistId - playlist id, default null
+     *
+     * @throws NotFoundException - if specified playlist not found
      */
     public function getPlaylist($playlistId = null)
     {
-        $playlist = (new PlaylistModel)->getPlaylist($this->userId, $playlistId);
-        $this->response->addHeader('200 OK')->send(['playlist' => $playlist]);
+        $page = $this->getPageNumber();
+
+        $playlistModel = new PlaylistModel;
+        $playlist = $playlistModel->getPlaylist($this->userId, $playlistId, $page);
+
+        $responseData = ['playlist' => $playlist];
+
+        if ($playlistId !== null) {
+            if (empty($playlist)) {
+                throw new NotFoundException('Playlist not found!');
+            }
+        } else {
+            $numberOfResults = $playlistModel->getPlaylistCount($this->userId);
+            $responseData['info'] = $this->getPaginationBlock($page, $numberOfResults);
+        }
+
+        $this->response->addHeader('200 OK')->send($responseData);
     }
 
     /**
@@ -36,6 +53,9 @@ class PlaylistController extends MusicPlayerAuthController
     {
         $requestData = $this->request->getRawData();
 
+        /**
+         * TODO: create private method to validate income data
+         */
         if (!isset($requestData['POST']) || !isset($requestData['POST']['name'])) {
             throw new BadRequestException('Name of playlist must be specified!');
         }
@@ -82,7 +102,7 @@ class PlaylistController extends MusicPlayerAuthController
         $updated = $playlistModel->updatePlaylist($playlistId, $this->userId, $playlistName);
 
         if (!$updated) {
-            throw new NotFoundException('Could not update specified playlist for authorized user!');
+            throw new NotFoundException('Playlist not found!');
         }
 
         $this->response->addHeader('204 No Content')->send();
@@ -100,7 +120,7 @@ class PlaylistController extends MusicPlayerAuthController
         $deleted = (new PlaylistModel)->deletePlaylist($playlistId, $this->userId);
 
         if (!$deleted) {
-            throw new NotFoundException('Could not delete specified playlist for authorized user!');
+            throw new NotFoundException('Playlist not found!');
         }
 
         $this->response->addHeader('204 No Content')->send();
@@ -147,6 +167,44 @@ class PlaylistController extends MusicPlayerAuthController
     }
 
     /**
+     * Method will send back list of all songs from playlist of authorized user
+     * If song id specified, then it will return only following song
+     *
+     * @param int $playlistId - playlist id
+     * @param int|null $songId - song id, default null
+     *
+     * @throws NotFoundException - if specified playlist not found
+     */
+    public function getSongsFromPlaylist($playlistId, $songId = null)
+    {
+        $playlist = (new PlaylistModel)->getPlaylist($this->userId, $playlistId);
+
+        if (empty($playlist)) {
+            throw new NotFoundException('Playlist not found!');
+        }
+
+        $page = $this->getPageNumber();
+
+        $songsModel = new SongsModel;
+
+        $data = $songsModel->getSongsFromPlaylist($playlistId, $this->userId, $songId, $page);
+
+        $responseKey = $songId !== null ? 'song' : 'songs';
+        $responseData = [$responseKey => $data];
+
+        if ($songId !== null) {
+            if (empty($data)) {
+                throw new NotFoundException('Song not found!');
+            }
+        } else {
+            $numberOfResults = $songsModel->getSongsCount($playlistId, $this->userId);
+            $responseData['info'] = $this->getPaginationBlock($page, $numberOfResults);
+        }
+
+        $this->response->addHeader('200 OK')->send($responseData);
+    }
+
+    /**
      * Method deletes song from playlist of authorized user
      *
      * @param int $playlistId - playlist id
@@ -159,7 +217,7 @@ class PlaylistController extends MusicPlayerAuthController
         $deleted = (new SongsModel)->deleteSongFromPlaylist($songId, $playlistId, $this->userId);
 
         if (!$deleted) {
-            throw new NotFoundException('Could not delete song from playlist of authorized user!');
+            throw new NotFoundException('Song not found!');
         }
 
         $this->response->addHeader('204 No Content')->send();

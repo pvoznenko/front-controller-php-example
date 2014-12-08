@@ -51,11 +51,11 @@ abstract class Singleton
      *
      * Singleton cloning is denied
      *
-     * @throws Exception
+     * @throws \Exception
      */
     public function __clone()
     {
-        throw new Exception('Can not __clone singleton! :: ' . __LINE__);
+        throw new \Exception('Can not __clone singleton! :: ' . __LINE__);
     }
 
     /**
@@ -63,11 +63,11 @@ abstract class Singleton
      *
      * Singleton serialization is denied
      *
-     * @throws Exception
+     * @throws \Exception
      */
     public function __sleep()
     {
-        throw new Exception('Can not __sleep singleton! ' . get_called_class() . ' :: ' . __LINE__);
+        throw new \Exception('Can not __sleep singleton! ' . get_called_class() . ' :: ' . __LINE__);
     }
 
     /**
@@ -75,10 +75,10 @@ abstract class Singleton
      *
      * Singleton serialization is denied
      *
-     * @throws Exception
+     * @throws \Exception
      */
     public function __wakeup()
     {
-        throw new Exception('Can not __wakeup singleton! ' . get_called_class() . ' :: '. __LINE__);
+        throw new \Exception('Can not __wakeup singleton! ' . get_called_class() . ' :: '. __LINE__);
     }
 }

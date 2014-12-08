@@ -1,26 +1,23 @@
 <?php
-namespace MusicPlayer\models;
+namespace MusicPlayer\entities;
 
-use app\dataLayer\BaseModel;
-use MusicPlayer\entities\UsersEntity;
+use app\dataLayer\BaseEntity;
+use app\dataLayer\Param;
 
 /**
- * Class UsersModel
- * @package MusicPlayer\models
+ * Class UsersEntity
+ * @package MusicPlayer\entities
  *
- * Model represents action on Users in DB
+ * Responsible for DB communication
  */
-class UsersModel extends BaseModel
+class UsersEntity extends BaseEntity
 {
     /**
-     * @var UsersEntity
+     * Table name
+     *
+     * @var string
      */
-    protected $entity;
-
-    public function __construct()
-    {
-        $this->entity = new UsersEntity;
-    }
+    protected $tableName = 'users';
 
     /**
      * Method will add user with token (in scope of test application user is only id and auth token)
@@ -31,7 +28,9 @@ class UsersModel extends BaseModel
      */
     public function addUser($token)
     {
-        return $this->entity->addUser($token);
+        $data = ['token' => new Param($token, SQLITE3_TEXT)];
+
+        return $this->insertData($data);
     }
 
     /**
@@ -42,6 +41,8 @@ class UsersModel extends BaseModel
      */
     public function getUserIdByToken($token)
     {
-        return $this->entity->getUserIdByToken($token);
+        $data = ['token' => new Param($token, SQLITE3_TEXT)];
+
+        return $this->getId($data);
     }
 } 

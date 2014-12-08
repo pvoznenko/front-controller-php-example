@@ -2,6 +2,7 @@
 namespace MusicPlayer;
 
 use app\BaseController;
+use app\dataLayer\BaseEntity;
 use app\interfaces\RequestInterface;
 use app\interfaces\ResponseInterface;
 use MusicPlayer\models\UsersModel;
@@ -49,5 +50,40 @@ abstract class MusicPlayerAuthController extends BaseController
         $this->userId = $userId;
 
         parent::execute($action, $request, $response);
+    }
+
+    /**
+     * Method returns page number for pagination
+     *
+     * @return int
+     */
+    protected function getPageNumber()
+    {
+        $requestData = $this->request->getRawData();
+
+        $page = isset($requestData['GET']) && isset($requestData['GET']['page']) ? (int)$requestData['GET']['page'] : 1;
+
+        if ($page <= 0) {
+            $page = 1;
+        }
+
+        return $page;
+    }
+
+    /**
+     * Method returns array with mandatory information for the pagination
+     *
+     * @param int $page
+     * @param int $numberOfResults
+     * @return array
+     */
+    protected function getPaginationBlock($page, $numberOfResults)
+    {
+        return [
+            'num_results' => $numberOfResults,
+            'limit' => BaseEntity::DEFAULT_ROWS_LIMIT,
+            'offset' => BaseEntity::calculateOffset($page),
+            'page' => $page
+        ];
     }
 } 

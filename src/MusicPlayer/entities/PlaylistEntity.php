@@ -1,26 +1,23 @@
 <?php
-namespace MusicPlayer\models;
+namespace MusicPlayer\entities;
 
-use app\dataLayer\BaseModel;
-use MusicPlayer\entities\PlaylistEntity;
+use app\dataLayer\BaseEntity;
+use app\dataLayer\Param;
 
 /**
- * Class PlaylistModel
- * @package MusicPlayer\models
+ * Class PlaylistEntity
+ * @package MusicPlayer\entities
  *
- * Model represents action on Playlist
+ * Model represents action on Playlist in DB
  */
-class PlaylistModel extends BaseModel
+class PlaylistEntity extends BaseEntity
 {
     /**
-     * @var PlaylistEntity
+     * Table name
+     *
+     * @var string
      */
-    protected $entity;
-
-    public function __construct()
-    {
-        $this->entity = new PlaylistEntity;
-    }
+    protected $tableName = 'playlist';
 
     /**
      * Method return list of all playlist that specified user have
@@ -34,7 +31,20 @@ class PlaylistModel extends BaseModel
      */
     public function getPlaylist($userId, $playlistId = null, $page = 1)
     {
-        return $this->entity->getPlaylist($userId, $playlistId, $page);
+        $selectData = ['id', 'user_id', 'name'];
+
+        $data = [
+            'user_id' => new Param($userId, SQLITE3_INTEGER)
+        ];
+
+        if ($playlistId !== null) {
+            $data['id'] = new Param($playlistId, SQLITE3_INTEGER);
+            $page = null;
+        }
+
+        $result = $this->selectData($selectData, $data, \PDO::FETCH_ASSOC, $page);
+
+        return $result === false ? [] : $result;
     }
 
     /**
@@ -45,7 +55,11 @@ class PlaylistModel extends BaseModel
      */
     public function getPlaylistCount($userId)
     {
-        return $this->entity->getPlaylistCount($userId);
+        $data = [
+            'user_id' => new Param($userId, SQLITE3_INTEGER)
+        ];
+
+        return (int)$this->selectData(['COUNT(id)'], $data, \PDO::FETCH_COLUMN);
     }
 
     /**
@@ -58,7 +72,12 @@ class PlaylistModel extends BaseModel
      */
     public function getPlaylistByName($name, $userId)
     {
-        return $this->entity->getPlaylistByName($name, $userId);
+        $data = [
+            'name' => new Param($name, SQLITE3_TEXT),
+            'user_id' => new Param($userId, SQLITE3_INTEGER)
+        ];
+
+        return $this->selectData(['id', 'user_id', 'name'], $data);
     }
 
     /**
@@ -71,7 +90,12 @@ class PlaylistModel extends BaseModel
      */
     public function addPlaylist($name, $userId)
     {
-        return $this->entity->addPlaylist($name, $userId);
+        $data = [
+            'name' => new Param($name, SQLITE3_TEXT),
+            'user_id' => new Param($userId, SQLITE3_INTEGER)
+        ];
+
+        return $this->insertData($data);
     }
 
     /**
@@ -85,7 +109,16 @@ class PlaylistModel extends BaseModel
      */
     public function updatePlaylist($playlistId, $userId, $newName)
     {
-        return $this->entity->updatePlaylist($playlistId, $userId, $newName);
+        $what = [
+            'name' => new Param($newName, SQLITE3_TEXT)
+        ];
+
+        $where = [
+            'id' => new Param($playlistId, SQLITE3_INTEGER),
+            'user_id' => new Param($userId, SQLITE3_INTEGER)
+        ];
+
+        return $this->updateData($what, $where);
     }
 
     /**
@@ -98,6 +131,11 @@ class PlaylistModel extends BaseModel
      */
     public function deletePlaylist($playlistId, $userId)
     {
-        return $this->entity->deletePlaylist($playlistId, $userId);
+        $data = [
+            'id' => new Param($playlistId, SQLITE3_INTEGER),
+            'user_id' => new Param($userId, SQLITE3_INTEGER)
+        ];
+
+        return $this->deleteData($data);
     }
 } 

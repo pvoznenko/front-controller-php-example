@@ -1,26 +1,23 @@
 <?php
-namespace MusicPlayer\models;
+namespace MusicPlayer\entities;
 
-use app\dataLayer\BaseModel;
-use MusicPlayer\entities\SongsEntity;
+use app\dataLayer\BaseEntity;
+use app\dataLayer\Param;
 
 /**
- * Class SongsModel
- * @package MusicPlayer\models
+ * Class SongsEntity
+ * @package MusicPlayer\entities
  *
  * Model represents action on Songs in DB
  */
-class SongsModel extends BaseModel
+class SongsEntity extends BaseEntity
 {
     /**
-     * @var SongsEntity
+     * Table name
+     *
+     * @var string
      */
-    protected $entity;
-
-    public function __construct()
-    {
-        $this->entity = new SongsEntity;
-    }
+    protected $tableName = 'songs';
 
     /**
      * Method return songs from specified playlist for authorized user
@@ -35,7 +32,21 @@ class SongsModel extends BaseModel
      */
     public function getSongsFromPlaylist($playlistId, $userId, $songId = null, $page = 1)
     {
-        return $this->entity->getSongsFromPlaylist($playlistId, $userId, $songId, $page);
+        $selectData = ['id', 'user_id', 'playlist_id', 'track', 'artist', 'album'];
+
+        $data = [
+            'user_id' => new Param($userId, SQLITE3_INTEGER),
+            'playlist_id' => new Param($playlistId, SQLITE3_INTEGER)
+        ];
+
+        if ($songId !== null) {
+            $data['id'] = new Param($songId, SQLITE3_INTEGER);
+            $page = null;
+        }
+
+        $result = $this->selectData($selectData, $data, \PDO::FETCH_ASSOC, $page);
+
+        return $result === false ? [] : $result;
     }
 
     /**
@@ -47,7 +58,12 @@ class SongsModel extends BaseModel
      */
     public function getSongsCount($playlistId, $userId)
     {
-        return $this->entity->getSongsCount($playlistId, $userId);
+        $data = [
+            'playlist_id' => new Param($playlistId, SQLITE3_INTEGER),
+            'user_id' => new Param($userId, SQLITE3_INTEGER)
+        ];
+
+        return (int)$this->selectData(['COUNT(id)'], $data, \PDO::FETCH_COLUMN);
     }
 
     /**
@@ -63,7 +79,15 @@ class SongsModel extends BaseModel
      */
     public function isSongInPlaylist($track, $artist, $album, $playlistId, $userId)
     {
-        return $this->entity->isSongInPlaylist($track, $artist, $album, $playlistId, $userId);
+        $data = [
+            'track' => new Param($track, SQLITE3_TEXT),
+            'artist' => new Param($artist, SQLITE3_TEXT),
+            'album' => new Param($album, SQLITE3_TEXT),
+            'playlist_id' => new Param($playlistId, SQLITE3_INTEGER),
+            'user_id' => new Param($userId, SQLITE3_INTEGER)
+        ];
+
+        return (bool)$this->selectData(['id'], $data);
     }
 
     /**
@@ -79,7 +103,15 @@ class SongsModel extends BaseModel
      */
     public function addSongToPlaylist($track, $artist, $album, $playlistId, $userId)
     {
-        return $this->entity->addSongToPlaylist($track, $artist, $album, $playlistId, $userId);
+        $data = [
+            'track' => new Param($track, SQLITE3_TEXT),
+            'artist' => new Param($artist, SQLITE3_TEXT),
+            'album' => new Param($album, SQLITE3_TEXT),
+            'playlist_id' => new Param($playlistId, SQLITE3_INTEGER),
+            'user_id' => new Param($userId, SQLITE3_INTEGER)
+        ];
+
+        return $this->insertData($data);
     }
 
     /**
@@ -93,6 +125,12 @@ class SongsModel extends BaseModel
      */
     public function deleteSongFromPlaylist($songId, $playlistId, $userId)
     {
-        return $this->entity->deleteSongFromPlaylist($songId, $playlistId, $userId);
+        $data = [
+            'id' => new Param($songId, SQLITE3_INTEGER),
+            'playlist_id' => new Param($playlistId, SQLITE3_INTEGER),
+            'user_id' => new Param($userId, SQLITE3_INTEGER)
+        ];
+
+        return $this->deleteData($data);
     }
 } 

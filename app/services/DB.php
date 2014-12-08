@@ -1,5 +1,8 @@
 <?php
-namespace app;
+namespace app\services;
+
+use app\interfaces\ServiceInterface;
+use app\ServiceContainer;
 
 /**
  * Class DB
@@ -12,7 +15,7 @@ namespace app;
  * @method int exec(string $statement) - PDOs execute method
  * @method int lastInsertId() - PDOs last insert id method
  */
-class DB extends Singleton
+class DB implements ServiceInterface
 {
     /**
      * @var \PDO
@@ -20,11 +23,35 @@ class DB extends Singleton
     protected $db;
 
     /**
-     * Lets set connection to the Storage, in scope of test application it will be sqlite
+     * Should return unique name of the service
+     *
+     * @return string
      */
-    protected function __construct()
+    public static function getServiceName()
     {
-        $this->db = new \PDO('sqlite:' . DB_FILE_PATH);
+        return 'DB';
+    }
+
+    /**
+     * Add service initializer into DI container
+     *
+     * @param ServiceContainer $container
+     * @param mixed $injection - injectable object, default null
+     * @return mixed
+     */
+    public static function initializeService(ServiceContainer $container, $injection = null)
+    {
+        $container->set(static::getServiceName(), new self($injection));
+    }
+
+    /**
+     * Lets set connection to the Storage, in scope of test application it will be sqlite
+     *
+     * @param \PDO $db - connection to the Database
+     */
+    protected function __construct(\PDO $db)
+    {
+        $this->db = $db;
         $this->db->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
 
         /**
@@ -44,4 +71,4 @@ class DB extends Singleton
     {
         return call_user_func_array([$this->db, $method], $params);
     }
-} 
+}

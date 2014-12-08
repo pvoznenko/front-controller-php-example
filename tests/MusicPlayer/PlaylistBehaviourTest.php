@@ -53,13 +53,13 @@ class PlaylistBehaviourTest extends BaseWebTestClass
     }
 
     /**
-     * Test possibility of adding new playlist and getting playlist
+     * Test possibility of adding new playlist
      *
      * @depends testAuthSuccess
      *
      * @covers \MusicPlayer\controllers\PlaylistController::addPlaylist
      */
-    public function testAddingNewPlaylistAndGet()
+    public function testAddingNewPlaylist()
     {
         $authHeaders = $this->getAuthHeaders();
 
@@ -85,8 +85,6 @@ class PlaylistBehaviourTest extends BaseWebTestClass
         $this->assertTrue(isset($decodedResponse['playlist']) && isset($decodedResponse['playlist']['id'])
             , 'Data regarding playlist should be presented!');
 
-        $playlistId = $decodedResponse['playlist']['id'];
-
         /**
          * For duplication of creation request we should get error
          */
@@ -97,6 +95,26 @@ class PlaylistBehaviourTest extends BaseWebTestClass
         } catch (BadResponseException $exception) {
             $this->assertEquals($exception->getResponse()->getStatusCode(), 400, 'Status of response should be 400!');
         }
+    }
+
+    /**
+     * Test covers getting playlist functionality
+     *
+     *
+     *
+     * @covers \MusicPlayer\controllers\PlaylistController::getPlaylist
+     */
+    public function testGetPlaylist()
+    {
+        $authHeaders = $this->getAuthHeaders();
+
+        $playlistName = 'New Test Playlist';
+        $decodedResponse = $this->client
+            ->post('api/playlist', $authHeaders, ['name' => $playlistName])
+            ->send()
+            ->json();
+
+        $playlistId = $decodedResponse['playlist']['id'];
 
         /**
          * Since we created playlist, we should get list of playlist
@@ -118,12 +136,80 @@ class PlaylistBehaviourTest extends BaseWebTestClass
         $this->assertTrue(isset($decodedResponse['playlist']) && isset($decodedResponse['playlist']['name'])
             , 'Data regarding playlist should be presented!');
         $this->assertTrue($decodedResponse['playlist']['name'] == $playlistName, 'Expected names should be equal!');
+
+        /**
+         * Lets try to get not existing playlist, we should get an error
+         */
+        try {
+            $this->client
+                ->get('api/playlist/1234', $authHeaders)
+                ->send();
+        } catch (BadResponseException $exception) {
+            $this->assertEquals($exception->getResponse()->getStatusCode(), 404, 'Status of response should be 404!');
+        }
+
+        /**
+         * Lets check pagination
+         *
+         * Following block should return our new playlist
+         */
+        $request = $this->client->get('api/playlist?page=1', $authHeaders);
+        $response = $request->send();
+        $decodedResponse = $response->json();
+        $this->assertEquals($response->getStatusCode(), 200, 'Status of response should be 200!');
+        $this->assertTrue(isset($decodedResponse['playlist']) && count($decodedResponse['playlist']) > 0
+            , 'Data regarding playlist should be presented!');
+        $this->assertTrue(isset($decodedResponse['info']) && count($decodedResponse['info']) > 0
+            , 'Data regarding pagination should be presented!');
+
+        /**
+         * Following block should return empty list
+         */
+        $request = $this->client->get('api/playlist?page=2', $authHeaders);
+        $response = $request->send();
+        $decodedResponse = $response->json();
+        $this->assertEquals($response->getStatusCode(), 200, 'Status of response should be 200!');
+        $this->assertTrue(isset($decodedResponse['playlist']) && count($decodedResponse['playlist']) == 0
+            , 'Should be empty response');
+
+        /**
+         * Following block should return playlist list as page would be 1
+         */
+        $request = $this->client->get('api/playlist?page=0', $authHeaders);
+        $response = $request->send();
+        $decodedResponse = $response->json();
+        $this->assertEquals($response->getStatusCode(), 200, 'Status of response should be 200!');
+        $this->assertTrue(isset($decodedResponse['playlist']) && count($decodedResponse['playlist']) > 0
+            , 'Data regarding playlist should be presented!');
+
+        /**
+         * Lets try to wrong param type in pagination, we should get an error
+         */
+        try {
+            $this->client
+                ->get('api/playlist?page=-1', $authHeaders)
+                ->send();
+        } catch (BadResponseException $exception) {
+            $this->assertEquals($exception->getResponse()->getStatusCode(), 404, 'Status of response should be 404!');
+        }
+
+        /**
+         * Lets try to wrong param type in pagination, we should get an error
+         */
+        try {
+            $this->client
+                ->get('api/playlist?page=asd', $authHeaders)
+                ->send();
+        } catch (BadResponseException $exception) {
+            $this->assertEquals($exception->getResponse()->getStatusCode(), 404, 'Status of response should be 404!');
+        }
     }
 
     /**
      * Test playlist update
      *
-     * @depends testAddingNewPlaylistAndGet
+     * @depends testAddingNewPlaylist
+     * @depends testGetPlaylist
      *
      * @covers \MusicPlayer\controllers\PlaylistController::updatePlaylist
      */
@@ -211,7 +297,8 @@ class PlaylistBehaviourTest extends BaseWebTestClass
     /**
      * Test playlist deletion
      *
-     * @depends testAddingNewPlaylistAndGet
+     * @depends testAddingNewPlaylist
+     * @depends testGetPlaylist
      *
      * @covers \MusicPlayer\controllers\PlaylistController::deletePlaylist
      */
@@ -264,13 +351,15 @@ class PlaylistBehaviourTest extends BaseWebTestClass
         }
 
         /**
-         * We should get empty response
+         * Lets try to get not existing playlist, we should get an error
          */
-        $decodedResponse = $this->client
-            ->get('api/playlist/' . $playlistId, $authHeaders)
-            ->send()
-            ->json();
-        $this->assertTrue(empty($decodedResponse['playlist']));
+        try {
+            $this->client
+                ->get('api/playlist/' . $playlistId, $authHeaders)
+                ->send();
+        } catch (BadResponseException $exception) {
+            $this->assertEquals($exception->getResponse()->getStatusCode(), 404, 'Status of response should be 404!');
+        }
 
         /**
          * We should get empty list of playlist
@@ -283,13 +372,13 @@ class PlaylistBehaviourTest extends BaseWebTestClass
     }
 
     /**
-     * Test possibility of adding new playlist and getting playlist
+     * Test possibility of adding songs to specified playlist
      *
-     * @depends testAddingNewPlaylistAndGet
+     * @depends testAddingNewPlaylist
      *
      * @covers \MusicPlayer\controllers\PlaylistController::addSongToPlaylist
      */
-    public function testAddingSongToPlaylistAndGet()
+    public function testAddingSongToPlaylist()
     {
         $authHeaders = $this->getAuthHeaders();
 
@@ -308,7 +397,7 @@ class PlaylistBehaviourTest extends BaseWebTestClass
          * Lets try to add song to playlist without put data, should get error
          */
         try {
-            $this->client->put('api/playlist/' . $playlistId . '/song', $authHeaders)->send();
+            $this->client->put('api/playlist/' . $playlistId . '/songs', $authHeaders)->send();
         } catch (BadResponseException $exception) {
             $this->assertEquals($exception->getResponse()->getStatusCode(), 400, 'Status of response should be 400!');
         }
@@ -322,27 +411,166 @@ class PlaylistBehaviourTest extends BaseWebTestClass
 
         $data = ['track' => $track, 'artist' => $artist, 'album' => $album];
 
-        $request = $this->client->put('api/playlist/' . $playlistId . '/song', $authHeaders, $data);
+        $request = $this->client->put('api/playlist/' . $playlistId . '/songs', $authHeaders, $data);
         $response = $request->send();
         $decodedResponse = $response->json();
         $this->assertEquals($response->getStatusCode(), 201, 'Status of response should be 201!');
         $this->assertTrue(isset($decodedResponse['song']) && isset($decodedResponse['song']['id'])
             , 'Data regarding song should be presented!');
-
         /**
          * Lets try to do double add of existing song to playlist, should get error
          */
         try {
-            $this->client->put('api/playlist/' . $playlistId . '/song', $authHeaders, $data)->send();
+            $this->client->put('api/playlist/' . $playlistId . '/songs', $authHeaders, $data)->send();
         } catch (BadResponseException $exception) {
             $this->assertEquals($exception->getResponse()->getStatusCode(), 400, 'Status of response should be 400!');
         }
     }
 
     /**
+     * Test covers getting songs from specific playlist functionality
+     *
+     * @depends testAddingNewPlaylist
+     * @depends testAddingSongToPlaylist
+     *
+     * @covers \MusicPlayer\controllers\PlaylistController::addSongToPlaylist
+     */
+    public function testGetSongsFromPlaylist()
+    {
+        $authHeaders = $this->getAuthHeaders();
+
+        /**
+         * Lets create new playlist
+         */
+        $playlistName = 'New Test Playlist with Songs';
+        $decodedResponse = $this->client
+            ->post('api/playlist', $authHeaders, ['name' => $playlistName])
+            ->send()
+            ->json();
+
+        $playlistId = $decodedResponse['playlist']['id'];
+
+        /**
+         * Lets add new song to playlist
+         */
+        $track = 'New Track';
+        $artist = 'New Artist';
+        $album = 'New Album';
+
+        $data = ['track' => $track, 'artist' => $artist, 'album' => $album];
+
+        $decodedResponse = $this->client->put('api/playlist/' . $playlistId . '/songs', $authHeaders, $data)->send()->json();
+
+        $songId = $decodedResponse['song']['id'];
+
+        $playlistSongsUri = 'api/playlist/' . $playlistId . '/songs';
+
+        /**
+         * Lets try to get songs from not existing playlist, should fail
+         */
+        try {
+            $this->client->get('api/playlist/123213/songs', $authHeaders)->send();
+        } catch (BadResponseException $exception) {
+            $this->assertEquals($exception->getResponse()->getStatusCode(), 404, 'Status of response should be 404!');
+        }
+
+        /**
+         * Now we should get list of songs
+         */
+        $request = $this->client->get($playlistSongsUri, $authHeaders, $data);
+        $response = $request->send();
+        $decodedResponse = $response->json();
+        $this->assertEquals($response->getStatusCode(), 200, 'Status of response should be 200!');
+        $this->assertTrue(isset($decodedResponse['songs']) && count($decodedResponse['songs']) > 0
+            , 'Data regarding song should be presented!');
+
+        /**
+         * Lets try to get not existing songs from playlist, should fail
+         */
+        try {
+            $this->client->get($playlistSongsUri .'/123312', $authHeaders)->send();
+        } catch (BadResponseException $exception) {
+            $this->assertEquals($exception->getResponse()->getStatusCode(), 404, 'Status of response should be 404!');
+        }
+
+        /**
+         * Here we should get data regarding particular song
+         */
+        $request = $this->client->get($playlistSongsUri . '/' . $songId, $authHeaders, $data);
+        $response = $request->send();
+        $decodedResponse = $response->json();
+        $this->assertEquals($response->getStatusCode(), 200, 'Status of response should be 200!');
+        $this->assertTrue(isset($decodedResponse['song']) && isset($decodedResponse['song']['id'])
+            , 'Data regarding song should be presented!');
+        $song = $decodedResponse['song'];
+        $this->assertTrue($song['track'] == $track && $song['album'] == $album && $song['artist'] == $artist
+            , 'Data regarding song should be equal!');
+
+        /**
+         * Lets check pagination
+         *
+         * Following block should return our song list
+         */
+        $request = $this->client->get($playlistSongsUri . '?page=1', $authHeaders);
+        $response = $request->send();
+        $decodedResponse = $response->json();
+        $this->assertEquals($response->getStatusCode(), 200, 'Status of response should be 200!');
+        $this->assertTrue(isset($decodedResponse['songs']) && count($decodedResponse['songs']) > 0
+            , 'Data regarding playlist should be presented!');
+        $this->assertTrue(isset($decodedResponse['info']) && count($decodedResponse['info']) > 0
+            , 'Data regarding pagination should be presented!');
+
+        /**
+         * Following block should return empty list
+         */
+        $request = $this->client->get($playlistSongsUri . '?page=2', $authHeaders);
+        $response = $request->send();
+        $decodedResponse = $response->json();
+
+        $this->assertEquals($response->getStatusCode(), 200, 'Status of response should be 200!');
+        $this->assertTrue(isset($decodedResponse['songs']) && count($decodedResponse['songs']) == 0
+            , 'Should be empty response');
+
+
+        /**
+         * Following block should return song list, act as page 1
+         */
+        $request = $this->client->get($playlistSongsUri . '?page=0', $authHeaders);
+        $response = $request->send();
+        $decodedResponse = $response->json();
+        $this->assertEquals($response->getStatusCode(), 200, 'Status of response should be 200!');
+        $this->assertTrue(isset($decodedResponse['songs']) && count($decodedResponse['songs']) > 0
+            , 'Data regarding playlist should be presented!');
+
+        /**
+         * Lets try to wrong param type in pagination, we should get an error
+         */
+        try {
+            $this->client
+                ->get($playlistSongsUri . '?page=-2', $authHeaders)
+                ->send();
+        } catch (BadResponseException $exception) {
+            $this->assertEquals($exception->getResponse()->getStatusCode(), 404, 'Status of response should be 404!');
+        }
+
+        /**
+         * Lets try to wrong param type in pagination, we should get an error
+         */
+        try {
+            $this->client
+                ->get($playlistSongsUri . '?page=asd', $authHeaders)
+                ->send();
+        } catch (BadResponseException $exception) {
+            $this->assertEquals($exception->getResponse()->getStatusCode(), 404, 'Status of response should be 404!');
+        }
+    }
+
+    /**
      * Test playlist deletion
      *
-     * @depends testAddingNewPlaylistAndGet
+     * @depends testAddingNewPlaylist
+     * @depends testAddingSongToPlaylist
+     * @depends testGetSongsFromPlaylist
      *
      * @covers \MusicPlayer\controllers\PlaylistController::deleteSongFromPlaylist
      */
@@ -371,7 +599,7 @@ class PlaylistBehaviourTest extends BaseWebTestClass
         $data = ['track' => $track, 'artist' => $artist, 'album' => $album];
 
         $decodedResponse = $this->client
-            ->put('api/playlist/' . $playlistId . '/song', $authHeaders, $data)
+            ->put('api/playlist/' . $playlistId . '/songs', $authHeaders, $data)
             ->send()
             ->json();
         $songId = $decodedResponse['song']['id'];
@@ -385,7 +613,7 @@ class PlaylistBehaviourTest extends BaseWebTestClass
                 ->send()
                 ->json();
             $this->client
-                ->delete('api/playlist/' . $playlistId . '/song/' . $songId, ['Accept' => 'application/json', 'token' => $decodedResponse['token']])
+                ->delete('api/playlist/' . $playlistId . '/songs/' . $songId, ['Accept' => 'application/json', 'token' => $decodedResponse['token']])
                 ->send();
         } catch (BadResponseException $exception) {
             $this->assertEquals($exception->getResponse()->getStatusCode(), 404, 'Status of response should be 404!');
@@ -394,7 +622,7 @@ class PlaylistBehaviourTest extends BaseWebTestClass
         /**
          * Lets delete song from playlist
          */
-        $request = $this->client->delete('api/playlist/' . $playlistId . '/song/' . $songId, $authHeaders);
+        $request = $this->client->delete('api/playlist/' . $playlistId . '/songs/' . $songId, $authHeaders);
         $response = $request->send();
         $this->assertEquals($response->getStatusCode(), 204, 'Status of response should be 204!');
 
@@ -403,8 +631,17 @@ class PlaylistBehaviourTest extends BaseWebTestClass
          */
         try {
             $this->client
-                ->delete('api/playlist/' . $playlistId . '/song/' . $songId, $authHeaders)
+                ->delete('api/playlist/' . $playlistId . '/songs/' . $songId, $authHeaders)
                 ->send();
+        } catch (BadResponseException $exception) {
+            $this->assertEquals($exception->getResponse()->getStatusCode(), 404, 'Status of response should be 404!');
+        }
+
+        /**
+         * Song should not be exist
+         */
+        try {
+            $this->client->get('api/playlist/' . $playlistId . '/songs/' . $songId, $authHeaders)->send();
         } catch (BadResponseException $exception) {
             $this->assertEquals($exception->getResponse()->getStatusCode(), 404, 'Status of response should be 404!');
         }

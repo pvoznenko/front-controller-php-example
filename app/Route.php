@@ -48,7 +48,9 @@ class Route implements RouteInterface
      * @param string $method - request method, like GET, POST, PUT, DELETE
      * @param string $path - request url path (supports regexp)
      * @param string $controllerClass - controller class
-     * @param string $action - controller action, default action is index
+     * @param string $action - controller action, default action is index. I chose to specify action method instead of
+     *                         parsing URI and figure out action automatically, because in this way you need less manipulation
+     *                         on data. Maybe it is less flexible but in case of load more strait forward.
      */
     public function __construct($method, $path, $controllerClass, $action = self::DEFAULT_ACTION)
     {
@@ -100,14 +102,22 @@ class Route implements RouteInterface
      */
     public function createController(RequestInterface $request)
     {
+        $this->validateRequest($request);
+
+        return new $this->controllerClass;
+    }
+
+    /**
+     * Validates requested URI if controller and method exist and parameters are there
+     *
+     * @param RequestInterface $request
+     *
+     * @throws BadRequestException - if controller or method is not exist, or wrong parameters
+     */
+    private function validateRequest(RequestInterface $request)
+    {
         if (!class_exists($this->controllerClass)) {
             throw new BadRequestException(sprintf('Controller class %s not found', $this->controllerClass));
-        }
-
-        $controller = new $this->controllerClass;
-
-        if (!method_exists($controller, $this->action)) {
-            throw new BadRequestException(sprintf('Controller class %s has no %s method', $this->controllerClass, $this->action));
         }
 
         try {
@@ -118,9 +128,7 @@ class Route implements RouteInterface
                 throw new BadRequestException(sprintf('%s::%s wrong amount of required parameters', $this->controllerClass, $this->action));
             }
         } catch (\ReflectionException $exception) {
-            throw new BadRequestException(sprintf('%s::%s required parameters error', $this->controllerClass, $this->action));
+            throw new BadRequestException(sprintf('Controller class %s has no %s method', $this->controllerClass, $this->action));
         }
-
-        return $controller;
     }
 }

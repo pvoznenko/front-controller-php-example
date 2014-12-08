@@ -57,6 +57,10 @@ class Request implements RequestInterface
         }
 
         $this->rawData = $rawData;
+
+        /**
+         * TODO: implement objects for handle input params
+         */
     }
 
     /**
