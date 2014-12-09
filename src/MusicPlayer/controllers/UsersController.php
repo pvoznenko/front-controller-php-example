@@ -1,12 +1,12 @@
 <?php
-namespace MusicPlayer\controllers;
+namespace MusicPlayer\Controllers;
 
-use app\BaseController;
-use MusicPlayer\models\UsersModel;
+use App\BaseController;
+use MusicPlayer\Models\UsersModel;
 
 /**
  * Class UsersController
- * @package MusicPlayer\controllers
+ * @package MusicPlayer\Controllers
  *
  * Controller responsible for actions on users
  */

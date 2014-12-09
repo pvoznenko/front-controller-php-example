@@ -1,9 +1,9 @@
 <?php
-namespace app;
+namespace App;
 
-use app\interfaces\RouteInterface;
-use app\interfaces\RequestInterface;
-use app\exceptions\NotFoundException;
+use App\Interfaces\RouteInterface;
+use App\Interfaces\RequestInterface;
+use App\Exceptions\NotFoundException;
 
 /**
  * Class Router

@@ -1,17 +1,17 @@
 <?php
-namespace MusicPlayer\models;
+namespace MusicPlayer\Models;
 
-use app\dataLayer\BaseModel;
-use app\interfaces\SpotifyAPIInterface;
-use app\ServiceContainer;
-use app\services\SpotifyAPI;
-use app\dataLayer\BaseEntity;
-use app\containers\SpotifySearchResponseContainer;
-use app\interfaces\SpotifySearchEntityInterface;
+use App\DataLayer\BaseModel;
+use App\Interfaces\SpotifyAPIInterface;
+use App\ServiceContainer;
+use App\Services\SpotifyAPI;
+use App\DataLayer\BaseEntity;
+use App\Containers\SpotifySearchResponseContainer;
+use App\Interfaces\SpotifySearchEntityInterface;
 
 /**
  * Class SearchModel
- * @package MusicPlayer\models
+ * @package MusicPlayer\Models
  *
  * Model perform search through Spotify API
  */
@@ -34,7 +34,7 @@ class SearchModel extends BaseModel
      * @param string $type - search type, one of SpotifyAPI::SPOTIFY_SEARCH_TYPE_*
      * @param int $page - page number
      *
-     * @return \app\containers\SpotifySearchResponseContainer
+     * @return \App\Containers\SpotifySearchResponseContainer
      */
     public function search($query, $type, $page)
     {
@@ -50,7 +50,7 @@ class SearchModel extends BaseModel
      *
      * @return array
      *
-     * @throws \app\exceptions\BadRequestException
+     * @throws \App\Exceptions\BadRequestException
      */
     public function createResponse(SpotifySearchResponseContainer $response)
     {

@@ -1,13 +1,13 @@
 <?php
-namespace app\containers;
+namespace App\Containers;
 
-use app\BaseContainer;
-use app\interfaces\ContainerInterface;
-use app\interfaces\SpotifySearchEntityInterface;
+use App\BaseContainer;
+use App\Interfaces\ContainerInterface;
+use App\Interfaces\SpotifySearchEntityInterface;
 
 /**
  * Class SpotifySearchArtistContainer
- * @package app\containers
+ * @package App\Containers
  *
  * Container to handle Spotify track object
  *

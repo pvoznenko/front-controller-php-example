@@ -1,15 +1,15 @@
 <?php
-namespace MusicPlayer\controllers;
+namespace MusicPlayer\Controllers;
 
 use MusicPlayer\MusicPlayerAuthController;
-use MusicPlayer\models\PlaylistModel;
-use MusicPlayer\models\SongsModel;
-use app\exceptions\BadRequestException;
-use app\exceptions\NotFoundException;
+use MusicPlayer\Models\PlaylistModel;
+use MusicPlayer\Models\SongsModel;
+use App\Exceptions\BadRequestException;
+use App\Exceptions\NotFoundException;
 
 /**
  * Class PlaylistController
- * @package MusicPlayer\controllers
+ * @package MusicPlayer\Controllers
  *
  * Controller responsible for CRUD playlist
  */
@@ -53,7 +53,7 @@ class PlaylistController extends MusicPlayerAuthController
     {
         $this->validatePresentedData(['name']);
 
-        $requestData = $this->request->getRawData();
+        $requestData = $this->request->getData();
         $method = $this->request->getMethod();
 
         $playlistName = $requestData[$method]['name'];
@@ -83,7 +83,7 @@ class PlaylistController extends MusicPlayerAuthController
     {
         $this->validatePresentedData(['newName']);
 
-        $requestData = $this->request->getRawData();
+        $requestData = $this->request->getData();
         $method = $this->request->getMethod();
 
         $playlistName = $requestData[$method]['newName'];
@@ -132,7 +132,7 @@ class PlaylistController extends MusicPlayerAuthController
     {
         $this->validatePresentedData(['track', 'artist', 'album']);
 
-        $requestData = $this->request->getRawData();
+        $requestData = $this->request->getData();
         $method = $this->request->getMethod();
 
         $track = $requestData[$method]['track'];

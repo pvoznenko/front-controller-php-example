@@ -1,9 +1,9 @@
 <?php
-namespace app\services;
+namespace App\Services;
 
-use app\interfaces\ServiceInterface;
-use app\ServiceContainer;
-use app\interfaces\CacheInterface;
+use App\Interfaces\ServiceInterface;
+use App\ServiceContainer;
+use App\Interfaces\CacheInterface;
 
 class Cache implements ServiceInterface, CacheInterface
 {

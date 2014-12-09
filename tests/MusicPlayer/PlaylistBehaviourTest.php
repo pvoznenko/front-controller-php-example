@@ -43,7 +43,7 @@ class PlaylistBehaviourTest extends BaseWebTestClass
     /**
      * Test authentication success
      *
-     * @covers \MusicPlayer\controllers\PlaylistController::getPlaylist
+     * @covers \MusicPlayer\Controllers\PlaylistController::getPlaylist
      */
     public function testAuthSuccess()
     {
@@ -57,7 +57,7 @@ class PlaylistBehaviourTest extends BaseWebTestClass
      *
      * @depends testAuthSuccess
      *
-     * @covers \MusicPlayer\controllers\PlaylistController::addPlaylist
+     * @covers \MusicPlayer\Controllers\PlaylistController::addPlaylist
      */
     public function testAddingNewPlaylist()
     {
@@ -102,7 +102,7 @@ class PlaylistBehaviourTest extends BaseWebTestClass
      *
      *
      *
-     * @covers \MusicPlayer\controllers\PlaylistController::getPlaylist
+     * @covers \MusicPlayer\Controllers\PlaylistController::getPlaylist
      */
     public function testGetPlaylist()
     {
@@ -211,7 +211,7 @@ class PlaylistBehaviourTest extends BaseWebTestClass
      * @depends testAddingNewPlaylist
      * @depends testGetPlaylist
      *
-     * @covers \MusicPlayer\controllers\PlaylistController::updatePlaylist
+     * @covers \MusicPlayer\Controllers\PlaylistController::updatePlaylist
      */
     public function testUpdatePlaylist()
     {
@@ -300,7 +300,7 @@ class PlaylistBehaviourTest extends BaseWebTestClass
      * @depends testAddingNewPlaylist
      * @depends testGetPlaylist
      *
-     * @covers \MusicPlayer\controllers\PlaylistController::deletePlaylist
+     * @covers \MusicPlayer\Controllers\PlaylistController::deletePlaylist
      */
     public function testPlaylistDeletion()
     {
@@ -376,7 +376,7 @@ class PlaylistBehaviourTest extends BaseWebTestClass
      *
      * @depends testAddingNewPlaylist
      *
-     * @covers \MusicPlayer\controllers\PlaylistController::addSongToPlaylist
+     * @covers \MusicPlayer\Controllers\PlaylistController::addSongToPlaylist
      */
     public function testAddingSongToPlaylist()
     {
@@ -433,7 +433,7 @@ class PlaylistBehaviourTest extends BaseWebTestClass
      * @depends testAddingNewPlaylist
      * @depends testAddingSongToPlaylist
      *
-     * @covers \MusicPlayer\controllers\PlaylistController::addSongToPlaylist
+     * @covers \MusicPlayer\Controllers\PlaylistController::addSongToPlaylist
      */
     public function testGetSongsFromPlaylist()
     {
@@ -572,7 +572,7 @@ class PlaylistBehaviourTest extends BaseWebTestClass
      * @depends testAddingSongToPlaylist
      * @depends testGetSongsFromPlaylist
      *
-     * @covers \MusicPlayer\controllers\PlaylistController::deleteSongFromPlaylist
+     * @covers \MusicPlayer\Controllers\PlaylistController::deleteSongFromPlaylist
      */
     public function testDeleteSongFromPlaylist()
     {

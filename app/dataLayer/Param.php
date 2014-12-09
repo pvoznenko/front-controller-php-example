@@ -1,11 +1,11 @@
 <?php
-namespace app\dataLayer;
+namespace App\DataLayer;
 
-use app\GetterSetter;
+use App\GetterSetter;
 
 /**
  * Class Param
- * @package app\dataLayer
+ * @package App\DataLayer
  *
  * Object for parameter for DB
  *

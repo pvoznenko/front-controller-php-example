@@ -1,9 +1,9 @@
 <?php
-namespace app\interfaces;
+namespace App\Interfaces;
 
 /**
  * Interface CacheInterface
- * @package app\interfaces
+ * @package App\Interfaces
  *
  * Cache interface
  */

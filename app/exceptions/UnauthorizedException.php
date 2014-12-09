@@ -1,9 +1,9 @@
 <?php
-namespace app\exceptions;
+namespace App\Exceptions;
 
 /**
  * Class UnauthorizedException
- * @package app\exceptions
+ * @package App\Exceptions
  *
  * User not authorized exception, user should get "401 Unauthorized"
  */

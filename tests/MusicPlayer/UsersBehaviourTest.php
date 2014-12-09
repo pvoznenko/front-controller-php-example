@@ -15,7 +15,7 @@ class UsersBehaviourTest extends BaseWebTestClass
     /**
      * Test possibility to get auth token from server
      *
-     * @covers \MusicPlayer\controllers\UsersController::authentication
+     * @covers \MusicPlayer\Controllers\UsersController::authentication
      */
     public function testUserAuthentication()
     {

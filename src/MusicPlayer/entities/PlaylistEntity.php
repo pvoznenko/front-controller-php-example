@@ -1,12 +1,12 @@
 <?php
-namespace MusicPlayer\entities;
+namespace MusicPlayer\Entities;
 
-use app\dataLayer\BaseEntity;
-use app\dataLayer\Param;
+use App\DataLayer\BaseEntity;
+use App\DataLayer\Param;
 
 /**
  * Class PlaylistEntity
- * @package MusicPlayer\entities
+ * @package MusicPlayer\Entities
  *
  * Model represents action on Playlist in DB
  */

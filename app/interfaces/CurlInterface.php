@@ -1,9 +1,9 @@
 <?php
-namespace app\interfaces;
+namespace App\Interfaces;
 
 /**
  * Interface CurlInterface
- * @package app\interfaces
+ * @package App\Interfaces
  *
  * Interface for Curl Service
  */

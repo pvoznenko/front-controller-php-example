@@ -1,9 +1,9 @@
 <?php
-namespace app\exceptions;
+namespace App\Exceptions;
 
 /**
  * Class BadRequestException
- * @package app\exceptions
+ * @package App\Exceptions
  *
  * Bad request exception, user should see '400 Bad Request'
  */

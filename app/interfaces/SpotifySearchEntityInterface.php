@@ -1,9 +1,9 @@
 <?php
-namespace app\interfaces;
+namespace App\Interfaces;
 
 /**
  * Interface SpotifySearchEntityInterface
- * @package app\interfaces
+ * @package App\Interfaces
  *
  * Interface for Spotify API Search result entities
  */

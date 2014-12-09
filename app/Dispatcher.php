@@ -1,9 +1,9 @@
 <?php
-namespace app;
+namespace App;
 
-use app\interfaces\RouteInterface;
-use app\interfaces\RequestInterface;
-use app\interfaces\ResponseInterface;
+use App\Interfaces\RouteInterface;
+use App\Interfaces\RequestInterface;
+use App\Interfaces\ResponseInterface;
 
 /**
  * Class Dispatcher

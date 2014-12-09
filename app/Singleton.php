@@ -1,5 +1,5 @@
 <?php
-namespace app;
+namespace App;
 
 /**
  * Class Singleton
@@ -25,7 +25,6 @@ abstract class Singleton
      */
     protected function __construct()
     {
-
     }
 
     /**
@@ -50,35 +49,26 @@ abstract class Singleton
      * Clone method
      *
      * Singleton cloning is denied
-     *
-     * @throws \Exception
      */
-    public function __clone()
+    protected function __clone()
     {
-        throw new \Exception('Can not __clone singleton! :: ' . __LINE__);
     }
 
     /**
      * Sleep method
      *
      * Singleton serialization is denied
-     *
-     * @throws \Exception
      */
-    public function __sleep()
+    protected function __sleep()
     {
-        throw new \Exception('Can not __sleep singleton! ' . get_called_class() . ' :: ' . __LINE__);
     }
 
     /**
      * Wakeup method
      *
      * Singleton serialization is denied
-     *
-     * @throws \Exception
      */
-    public function __wakeup()
+    protected function __wakeup()
     {
-        throw new \Exception('Can not __wakeup singleton! ' . get_called_class() . ' :: '. __LINE__);
     }
 }

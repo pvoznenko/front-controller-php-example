@@ -1,9 +1,9 @@
 <?php
-namespace app\dataLayer;
+namespace App\DataLayer;
 
 /**
  * Class BaseModel
- * @package app\dataLayer
+ * @package App\DataLayer
  */
 abstract class BaseModel
 {

@@ -1,5 +1,5 @@
 <?php
-namespace app\interfaces;
+namespace App\Interfaces;
 
 /**
  * Interface RequestInterface
@@ -44,4 +44,11 @@ interface RequestInterface
      * @param array
      */
     public function getRawData();
+
+    /**
+     * Get list of filtered data from the request
+     *
+     * @param array
+     */
+    public function getData();
 } 

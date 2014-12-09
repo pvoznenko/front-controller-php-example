@@ -1,9 +1,9 @@
 <?php
-namespace app\interfaces;
+namespace App\Interfaces;
 
 /**
  * Interface ContainerInterface
- * @package app\interfaces
+ * @package App\Interfaces
  *
  * Container interface
  */

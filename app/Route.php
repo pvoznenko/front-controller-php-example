@@ -1,9 +1,9 @@
 <?php
-namespace app;
+namespace App;
 
-use app\interfaces\RequestInterface;
-use app\interfaces\RouteInterface;
-use app\exceptions\BadRequestException;
+use App\Interfaces\RequestInterface;
+use App\Interfaces\RouteInterface;
+use App\Exceptions\BadRequestException;
 
 /**
  * Class Route

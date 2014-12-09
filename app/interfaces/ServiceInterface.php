@@ -1,11 +1,11 @@
 <?php
-namespace app\interfaces;
+namespace App\Interfaces;
 
-use app\ServiceContainer;
+use App\ServiceContainer;
 
 /**
  * Interface ServiceInterface
- * @package app\interfaces
+ * @package App\Interfaces
  *
  * Interface for services
  */

@@ -1,8 +1,8 @@
 <?php
-namespace app;
+namespace App;
 
-use app\exceptions\NotAcceptableException;
-use app\interfaces\RequestInterface;
+use App\Exceptions\NotAcceptableException;
+use App\Interfaces\RequestInterface;
 
 /**
  * Class Request
@@ -40,6 +40,13 @@ class Request implements RequestInterface
     protected $rawData = [];
 
     /**
+     * List of filtered request data
+     *
+     * @var array
+     */
+    protected $data = [];
+
+    /**
      * @param string $uri - requested uri
      * @param string $method - requested method, like GET, POST, etc.
      * @param array $rawData - list of raw request data
@@ -57,10 +64,6 @@ class Request implements RequestInterface
         }
 
         $this->rawData = $rawData;
-
-        /**
-         * TODO: implement objects for handle input params
-         */
     }
 
     /**
@@ -71,6 +74,43 @@ class Request implements RequestInterface
     public function getRawData()
     {
         return $this->rawData;
+    }
+
+    /**
+     * Get list of filtered data from the request
+     *
+     * @return array
+     */
+    public function getData()
+    {
+        /**
+         * lets filter on demand, lazy way
+         */
+        if (empty($this->data)) {
+            $this->data = $this->filterIncomeData($this->rawData, $this->method);
+        }
+
+        return $this->data;
+    }
+
+    /**
+     * Method filters incoming data
+     *
+     * @param array $data - array with raw data from the client
+     * @param string $method - request method
+     * @return array
+     */
+    private function filterIncomeData(array $data, $method)
+    {
+        if (!isset($data[$method])) {
+            return $data;
+        }
+
+        foreach($data[$method] as $key => $value) {
+            $data[$method][$key] = htmlspecialchars($value, ENT_QUOTES);
+        }
+
+        return $data;
     }
 
     /**

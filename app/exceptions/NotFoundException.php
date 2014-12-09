@@ -1,9 +1,9 @@
 <?php
-namespace app\exceptions;
+namespace App\Exceptions;
 
 /**
  * Class NotFoundException
- * @package app\exceptions
+ * @package App\Exceptions
  *
  * Not found exception, user should get "404 Page Not Found"
  */

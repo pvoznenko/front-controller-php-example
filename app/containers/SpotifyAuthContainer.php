@@ -1,12 +1,12 @@
 <?php
-namespace app\containers;
+namespace App\Containers;
 
-use app\BaseContainer;
-use app\interfaces\ContainerInterface;
+use App\BaseContainer;
+use App\Interfaces\ContainerInterface;
 
 /**
  * Class SpotifyAuthContainer
- * @package app\containers
+ * @package App\Containers
  *
  * Container to handle Spotify API Auth response
  *

@@ -5,8 +5,24 @@
  */
 define('DB_FILE_PATH', ROOT . '/tmp/musicPlayer.DB');
 
+/**
+ * DB connection configuration
+ */
+define('DB_CONNECTION', 'sqlite:' . DB_FILE_PATH);
+
+/**
+ * Where to store DB file with SQLight
+ */
+define('MIGRATION_FOLDER_PATH', ROOT . '/config/migration');
+
+/**
+ * Version of current API
+ */
 define('API_VERSION', '1');
 
+/**
+ * API base url
+ */
 define('BASE_API_URL', '/api/v' . API_VERSION);
 
 /**

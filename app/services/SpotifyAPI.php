@@ -1,18 +1,18 @@
 <?php
-namespace app\services;
+namespace App\Services;
 
-use app\interfaces\ServiceInterface;
-use app\interfaces\CurlInterface;
-use app\interfaces\CacheInterface;
-use app\interfaces\SpotifyAPIInterface;
-use app\ServiceContainer;
-use app\exceptions\BadRequestException;
-use app\containers\SpotifyAuthContainer;
-use app\containers\SpotifySearchResultContainer;
+use App\Interfaces\ServiceInterface;
+use App\Interfaces\CurlInterface;
+use App\Interfaces\CacheInterface;
+use App\Interfaces\SpotifyAPIInterface;
+use App\ServiceContainer;
+use App\Exceptions\BadRequestException;
+use App\Containers\SpotifyAuthContainer;
+use App\Containers\SpotifySearchResultContainer;
 
 /**
  * Class SpotifyAPI
- * @package app\services
+ * @package App\Services
  *
  * Service responsible for communication with Spotify API
  */

@@ -1,5 +1,5 @@
 <?php
-namespace app;
+namespace App;
 
 /**
  * Class ClassLoader

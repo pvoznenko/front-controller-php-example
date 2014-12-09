@@ -1,13 +1,13 @@
 <?php
-namespace app\interfaces;
+namespace App\Interfaces;
 
-use app\exceptions\BadRequestException;
-use app\containers\SpotifyAuthContainer;
-use app\containers\SpotifySearchResultContainer;
+use App\Exceptions\BadRequestException;
+use App\Containers\SpotifyAuthContainer;
+use App\Containers\SpotifySearchResultContainer;
 
 /**
  * Interface SpotifyAPIInterface
- * @package app\interfaces
+ * @package App\Interfaces
  *
  * Interface for the Spotify API Service
  */

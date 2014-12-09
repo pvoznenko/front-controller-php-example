@@ -1,13 +1,13 @@
 <?php
-namespace MusicPlayer\controllers;
+namespace MusicPlayer\Controllers;
 
 use MusicPlayer\MusicPlayerAuthController;
-use \MusicPlayer\models\SearchModel;
-use app\services\SpotifyAPI;
+use \MusicPlayer\Models\SearchModel;
+use App\Services\SpotifyAPI;
 
 /**
  * Class SearchController
- * @package MusicPlayer\controllers
+ * @package MusicPlayer\Controllers
  *
  * Controller responsible for search in Spotify API
  */

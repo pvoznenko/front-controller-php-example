@@ -1,9 +1,9 @@
 <?php
-namespace app\exceptions;
+namespace App\Exceptions;
 
 /**
  * Class NotAcceptableException
- * @package app\exceptions
+ * @package App\Exceptions
  *
  * Not acceptable exception, user should see '406 Not Acceptable'
  */

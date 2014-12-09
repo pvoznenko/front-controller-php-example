@@ -1,5 +1,5 @@
 <?php
-namespace app\interfaces;
+namespace App\Interfaces;
 
 /**
  * Interface ResponseInterface

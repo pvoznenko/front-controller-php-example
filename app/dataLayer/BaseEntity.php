@@ -1,12 +1,12 @@
 <?php
-namespace app\dataLayer;
+namespace App\DataLayer;
 
-use app\interfaces\PDOInterface;
-use app\ServiceContainer;
+use App\Interfaces\PDOInterface;
+use App\ServiceContainer;
 
 /**
  * Class BaseEntity
- * @package app\dataLayer
+ * @package App\DataLayer
  *
  * Responsible for communication with DB
  */

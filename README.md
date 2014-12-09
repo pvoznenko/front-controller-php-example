@@ -2,6 +2,19 @@
 
 [![Build Status](https://magnum.travis-ci.com/fosco-maestro/music-player.svg?token=GBn7ue6jJozTxZP71pzj&branch=master)](https://magnum.travis-ci.com/fosco-maestro/music-player)
 
+## Dear Reviewer,
+
+Your feedback is really important for me. Please take Your time and write all comments where You think I should do differently,
+so I have chance to improve and do not do the same mistakes in the future. Thank You for Your time!
+
+## My Workflow
+
+Current project stored in my GitHub private repository ([https://github.com/fosco-maestro/music-player](https://github.com/fosco-maestro/music-player)),
+if you would like to see commit history please approach me. Each commit was tested on PHP versions `5.4`, `5.5` and
+`5.6` by commercial version of Travis, so all build is private too.
+
+## Technical Decisions
+
 For this test application I chose to focus on PHP part, because long time since I wrote something from scratch on PHP
 without using existing solutions. Also since I believe main goal of this test task to see how I think and code, in my
 GitHub I have enough javascript projects but only one PHP.
@@ -31,15 +44,29 @@ interface to communicate with PDO driver. I used common SQL syntactics, so it sh
 PDO driver with connection to MySQL database without changing Entity layer. If needed another storage with totally
 different interface for example, you exchange DB service and Entity layer.
 
-## Dear reviewer,
+Additionally to Front Controller I implemented Dependency Injection Container with Services (Service Container). Each
+Service is injectable and implement specific interface (so could be exchange with another object that implements the same
+interface) and initialized on demand (lazy loading). List of existing Services:
+* Cache - responsible for caching mechanics (currently using Redis);
+* Curl - responsible for cURL data (currently cURL wrapper);
+* DB - data storage (currently PDO);
+* SpotifyAPI - service that responsible for authentication with Spotify API server and provides interface for search
+functionality (also wraps search results in data object containers (containers)).
 
-Could you please after review me with a short feedback, so I have chance to improve and do not do the same mistakes
-in the future? Leave them as an Wiki page in project's GitHub repository. Thank you!
+## Application Life Cycle
+
+Application life cycle represents by following sequence:
+
+```
+Request -> Route -> Dispatch -> Controller -> Model -> Entity -> Services (Storage, etc)
+```
+
+When Controller got all needed data from the Model it generates Response to the client.
 
 ## System Requirements
 
-To run current web server you should have at least `PHP v5.4` or higher (tested on [Travis](https://travis-ci.org/)
-for PHP versions `5.4`, `5.5` and `5.6`) with `SQLite` and `cURL`.
+To run current web server you should have at least `PHP v5.4` with `SQLite`, `cURL` and `mcrypt` (by default `mcrypt` in
+Mac OS X is not installed).
 
 ## Run Web Server
 
@@ -69,6 +96,10 @@ $ php -S localhost:7070 -t /var/www/public
 ```
 
 Your server should be accessible from `http://localhost:7070/`.
+
+## Application Configuration
+
+You can configure application through configuration file at: `config\config.php`
 
 ## Test
 
@@ -105,7 +136,7 @@ If you will asked for another type, server will response with code `406`.
 
 ### Version
 
-You can configure version of your API at `app\config\config.php`.
+You can configure version of your API at `config\config.php`.
 
 Make sure that your requests contain correct version of API.
 
@@ -250,6 +281,61 @@ $ curl -i -H Accept:application/json -X DELETE -G http://localhost:7070/api/v1/p
 * If you tried to delete song from not yours playlist (not existing for authorized user) server will response with code `404`.
 
 #### Search
+
+You can perform search in Spotify library. You can search by artist, album or track. Current application provide API to
+do search using Spotify's search patterns (field filters). More information about search field filters possibility you
+can read at official [Spotify Documentation](https://developer.spotify.com/web-api/search-item/).
+
+##### GET /api/v1/search/track
+
+You can search by track:
+
+```
+$ curl -i -H Accept:application/json -X GET -G http://localhost:7070/api/v1/search/track?q={searchQuery} -H token:{token} -d page={page.?}
+```
+
+Variable `page` is optional for content pagination, by default is set to 1 and each page returns 20 rows of content.
+Variable `page` should be positive integer greater then 0, otherwise you would get `404` error. Variable `page` with
+value `0` will act as 1st page. Response will contain additional block with key `info` that contains information for
+pagination. Limitation made for not overflow response header size.
+
+* If everything is OK you should get response code `200` with list of search results;
+* Server will response with code `404` if variable `q` not specified;
+* Server will response with code `404` if optional variable `page` specified and it not positive integer.
+
+##### GET /api/v1/search/album
+
+You can search by album:
+
+```
+$ curl -i -H Accept:application/json -X GET -G http://localhost:7070/api/v1/search/album?q={searchQuery} -H token:{token} -d page={page.?}
+```
+
+Variable `page` is optional for content pagination, by default is set to 1 and each page returns 20 rows of content.
+Variable `page` should be positive integer greater then 0, otherwise you would get `404` error. Variable `page` with
+value `0` will act as 1st page. Response will contain additional block with key `info` that contains information for
+pagination. Limitation made for not overflow response header size.
+
+* If everything is OK you should get response code `200` with list of search results;
+* Server will response with code `404` if variable `q` not specified;
+* Server will response with code `404` if optional variable `page` specified and it not positive integer.
+
+##### GET /api/v1/search/artist
+
+You can search by artist:
+
+```
+$ curl -i -H Accept:application/json -X GET -G http://localhost:7070/api/v1/search/artist?q={searchQuery} -H token:{token} -d page={page.?}
+```
+
+Variable `page` is optional for content pagination, by default is set to 1 and each page returns 20 rows of content.
+Variable `page` should be positive integer greater then 0, otherwise you would get `404` error. Variable `page` with
+value `0` will act as 1st page. Response will contain additional block with key `info` that contains information for
+pagination. Limitation made for not overflow response header size.
+
+* If everything is OK you should get response code `200` with list of search results;
+* Server will response with code `404` if variable `q` not specified;
+* Server will response with code `404` if optional variable `page` specified and it not positive integer.
 
 ### Exceptions
 

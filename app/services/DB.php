@@ -1,9 +1,9 @@
 <?php
-namespace app\services;
+namespace App\Services;
 
-use app\interfaces\PDOInterface;
-use app\interfaces\ServiceInterface;
-use app\ServiceContainer;
+use App\Interfaces\PDOInterface;
+use App\Interfaces\ServiceInterface;
+use App\ServiceContainer;
 
 /**
  * Class DB
@@ -53,7 +53,7 @@ class DB implements ServiceInterface, PDOInterface
         /**
          * This will create DB, easy solution in scope of our test application.
          */
-        $this->db->exec(file_get_contents(ROOT . '/app/config/migration/base.sql'));
+        $this->db->exec(file_get_contents(MIGRATION_FOLDER_PATH . '/base.sql'));
     }
 
     /**

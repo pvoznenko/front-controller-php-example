@@ -1,13 +1,13 @@
 <?php
-namespace app\services;
+namespace App\Services;
 
-use app\interfaces\ServiceInterface;
-use app\interfaces\CurlInterface;
-use app\ServiceContainer;
+use App\Interfaces\ServiceInterface;
+use App\Interfaces\CurlInterface;
+use App\ServiceContainer;
 
 /**
  * Class Curl
- * @package app\services
+ * @package App\Services
  *
  * Curl wrapper
  */

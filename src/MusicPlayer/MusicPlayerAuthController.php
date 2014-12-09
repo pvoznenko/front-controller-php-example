@@ -1,13 +1,13 @@
 <?php
 namespace MusicPlayer;
 
-use app\BaseController;
-use app\dataLayer\BaseEntity;
-use app\interfaces\RequestInterface;
-use app\interfaces\ResponseInterface;
-use MusicPlayer\models\UsersModel;
-use app\exceptions\UnauthorizedException;
-use app\exceptions\BadRequestException;
+use App\BaseController;
+use App\DataLayer\BaseEntity;
+use App\Interfaces\RequestInterface;
+use App\Interfaces\ResponseInterface;
+use MusicPlayer\Models\UsersModel;
+use App\Exceptions\UnauthorizedException;
+use App\Exceptions\BadRequestException;
 
 /**
  * Class MusicPlayerAuthController
@@ -99,7 +99,7 @@ abstract class MusicPlayerAuthController extends BaseController
      */
     protected function validatePresentedData(array $keys)
     {
-        $requestData = $this->request->getRawData();
+        $requestData = $this->request->getData();
         $method = $this->request->getMethod();
 
         if (!isset($requestData[$method])) {

@@ -1,14 +1,14 @@
 <?php
-namespace app\containers;
+namespace App\Containers;
 
-use app\BaseContainer;
-use app\exceptions\BadRequestException;
-use app\interfaces\ContainerInterface;
-use app\services\SpotifyAPI;
+use App\BaseContainer;
+use App\Exceptions\BadRequestException;
+use App\Interfaces\ContainerInterface;
+use App\Services\SpotifyAPI;
 
 /**
  * Class Response
- * @package app\containers
+ * @package App\Containers
  *
  * Container to handle Spotify search response object
  *
@@ -58,9 +58,9 @@ class SpotifySearchResponseContainer extends BaseContainer implements ContainerI
      * @var array
      */
     private $containersMap = [
-        SpotifyAPI::SPOTIFY_SEARCH_TYPE_ALBUM => '\app\containers\SpotifySearchAlbumContainer',
-        SpotifyAPI::SPOTIFY_SEARCH_TYPE_ARTIST => '\app\containers\SpotifySearchArtistContainer',
-        SpotifyAPI::SPOTIFY_SEARCH_TYPE_TRACK => '\app\containers\SpotifySearchTrackContainer',
+        SpotifyAPI::SPOTIFY_SEARCH_TYPE_ALBUM => '\App\Containers\SpotifySearchAlbumContainer',
+        SpotifyAPI::SPOTIFY_SEARCH_TYPE_ARTIST => '\App\Containers\SpotifySearchArtistContainer',
+        SpotifyAPI::SPOTIFY_SEARCH_TYPE_TRACK => '\App\Containers\SpotifySearchTrackContainer',
     ];
 
     /**

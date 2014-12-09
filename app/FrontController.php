@@ -1,12 +1,12 @@
 <?php
-namespace app;
+namespace App;
 
-use app\interfaces\RequestInterface;
-use app\interfaces\ResponseInterface;
-use app\exceptions\NotFoundException;
-use app\exceptions\BadRequestException;
-use app\exceptions\NotAcceptableException;
-use app\exceptions\UnauthorizedException;
+use App\Interfaces\RequestInterface;
+use App\Interfaces\ResponseInterface;
+use App\Exceptions\NotFoundException;
+use App\Exceptions\BadRequestException;
+use App\Exceptions\NotAcceptableException;
+use App\Exceptions\UnauthorizedException;
 
 /**
  * Class FrontController
