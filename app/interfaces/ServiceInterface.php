@@ -24,7 +24,6 @@ interface ServiceInterface
      *
      * @param ServiceContainer $container
      * @param mixed $injection - injectable object, default null
-     * @return mixed
      */
     public static function initializeService(ServiceContainer $container, $injection = null);
 }

@@ -1,6 +1,7 @@
 <?php
 namespace app\services;
 
+use app\interfaces\PDOInterface;
 use app\interfaces\ServiceInterface;
 use app\ServiceContainer;
 
@@ -9,18 +10,13 @@ use app\ServiceContainer;
  * @package app
  *
  * Class DB handle connection
- *
- * @method \PDOStatement prepare(string $statement) - PDOs prepare method
- * @method \PDOStatement query(string $statement) - PDOs query method
- * @method int exec(string $statement) - PDOs execute method
- * @method int lastInsertId() - PDOs last insert id method
  */
-class DB implements ServiceInterface
+class DB implements ServiceInterface, PDOInterface
 {
     /**
      * @var \PDO
      */
-    protected $db;
+    private $db;
 
     /**
      * Should return unique name of the service
@@ -37,11 +33,11 @@ class DB implements ServiceInterface
      *
      * @param ServiceContainer $container
      * @param mixed $injection - injectable object, default null
-     * @return mixed
      */
     public static function initializeService(ServiceContainer $container, $injection = null)
     {
-        $container->set(static::getServiceName(), new self($injection));
+        $className = __CLASS__;
+        $container->set(static::getServiceName(), function() use($className, $injection) { return new $className($injection); });
     }
 
     /**
@@ -61,14 +57,45 @@ class DB implements ServiceInterface
     }
 
     /**
-     * Magic method to get access to the PDOs methods
+     * PDOs prepare method
      *
-     * @param string $method
-     * @param array $params
-     * @return mixed
+     * @param string $statement
+     * @return \PDOStatement
      */
-    public function __call($method, $params)
+    public function prepare($statement)
     {
-        return call_user_func_array([$this->db, $method], $params);
+        return $this->db->prepare($statement);
+    }
+
+    /**
+     * PDOs query method
+     *
+     * @param string $statement
+     * @return \PDOStatement
+     */
+    public function query($statement)
+    {
+        return $this->db->query($statement);
+    }
+
+    /**
+     * PDOs execute method
+     *
+     * @param string $statement
+     * @return int
+     */
+    public function exec($statement)
+    {
+        return $this->db->exec($statement);
+    }
+
+    /**
+     * Will return last inserted id
+     *
+     * @return int
+     */
+    public function lastInsertId()
+    {
+        return $this->db->lastInsertId();
     }
 }

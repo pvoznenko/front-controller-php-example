@@ -19,7 +19,7 @@ class UsersBehaviourTest extends BaseWebTestClass
      */
     public function testUserAuthentication()
     {
-        $request = $this->client->post('api/users/authentication', ['Accept' => 'application/json']);
+        $request = $this->client->post(BASE_API_URL . '/users/authentication', ['Accept' => 'application/json']);
         $response = $request->send();
         $decodedResponse = $response->json();
         $this->assertEquals($response->getStatusCode(), 201, 'Status of response should be 201!');

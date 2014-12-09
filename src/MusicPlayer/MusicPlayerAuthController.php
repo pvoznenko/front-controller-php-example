@@ -7,6 +7,7 @@ use app\interfaces\RequestInterface;
 use app\interfaces\ResponseInterface;
 use MusicPlayer\models\UsersModel;
 use app\exceptions\UnauthorizedException;
+use app\exceptions\BadRequestException;
 
 /**
  * Class MusicPlayerAuthController
@@ -60,8 +61,9 @@ abstract class MusicPlayerAuthController extends BaseController
     protected function getPageNumber()
     {
         $requestData = $this->request->getRawData();
+        $method = $this->request->getMethod();
 
-        $page = isset($requestData['GET']) && isset($requestData['GET']['page']) ? (int)$requestData['GET']['page'] : 1;
+        $page = isset($requestData[$method]) && isset($requestData[$method]['page']) ? (int)$requestData[$method]['page'] : 1;
 
         if ($page <= 0) {
             $page = 1;
@@ -75,15 +77,39 @@ abstract class MusicPlayerAuthController extends BaseController
      *
      * @param int $page
      * @param int $numberOfResults
+     * @param int $limit - default BaseEntity::DEFAULT_ROWS_LIMIT
+     *
      * @return array
      */
-    protected function getPaginationBlock($page, $numberOfResults)
+    protected function getPaginationBlock($page, $numberOfResults, $limit = BaseEntity::DEFAULT_ROWS_LIMIT)
     {
         return [
             'num_results' => $numberOfResults,
-            'limit' => BaseEntity::DEFAULT_ROWS_LIMIT,
-            'offset' => BaseEntity::calculateOffset($page),
+            'limit' => $limit,
+            'offset' => BaseEntity::calculateOffset($page, $limit),
             'page' => $page
         ];
+    }
+
+    /**
+     * Method validates if all specified data presented in request
+     *
+     * @param array $keys - keys to validate
+     * @throws BadRequestException
+     */
+    protected function validatePresentedData(array $keys)
+    {
+        $requestData = $this->request->getRawData();
+        $method = $this->request->getMethod();
+
+        if (!isset($requestData[$method])) {
+            throw new BadRequestException;
+        }
+
+        foreach ($keys as $key) {
+            if (!isset($requestData[$method][$key])) {
+                throw new BadRequestException('Variable "' . $key . '"must be specified!');
+            }
+        }
     }
 } 

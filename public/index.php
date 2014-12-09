@@ -15,8 +15,10 @@ $requestData['GET'] = $_GET;
 
 $serviceContainer = app\ServiceContainer::getInstance();
 
-$db = new \PDO('sqlite:' . DB_FILE_PATH);
-app\services\DB::initializeService($serviceContainer, $db);
+app\services\DB::initializeService($serviceContainer, new \PDO('sqlite:' . DB_FILE_PATH));
+app\services\Cache::initializeService($serviceContainer);
+app\services\Curl::initializeService($serviceContainer);
+app\services\SpotifyAPI::initializeService($serviceContainer);
 
 $request = new app\Request($requestData['REQUEST_URI'], $requestData['REQUEST_METHOD'], $requestData);
 $response = new app\Response('HTTP/1.1');

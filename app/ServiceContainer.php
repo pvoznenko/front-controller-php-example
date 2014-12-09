@@ -19,17 +19,13 @@ class ServiceContainer extends Singleton
     /**
      * Add new service to container
      *
-     * @param array|string $serviceName
-     * @param callable|string|null $initializer
+     * @param string $serviceName - service name
+     * @param callable $initializer - lambda that will be executed when service will be called
      * @throws \Exception
      */
-    public function set($serviceName, $initializer = null)
+    public function set($serviceName, \Closure $initializer)
     {
-        if (is_object($initializer)) {
-            $this->services[$serviceName] = $initializer;
-        } else {
-            throw new \Exception('Wrong set of parameters');
-        }
+        $this->services[$serviceName] = $initializer;
     }
 
     /**
@@ -51,6 +47,14 @@ class ServiceContainer extends Singleton
      */
     public function get($serviceName)
     {
+        if (!$this->has($serviceName)) {
+            throw new \InvalidArgumentException(sprintf('Service %s not defined!', $serviceName));
+        }
+
+        if (is_callable($this->services[$serviceName])) {
+            return $this->services[$serviceName]($this);
+        }
+
         return $this->services[$serviceName];
     }
 } 

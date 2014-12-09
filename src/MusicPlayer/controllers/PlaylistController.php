@@ -51,16 +51,12 @@ class PlaylistController extends MusicPlayerAuthController
      */
     public function addPlaylist()
     {
+        $this->validatePresentedData(['name']);
+
         $requestData = $this->request->getRawData();
+        $method = $this->request->getMethod();
 
-        /**
-         * TODO: create private method to validate income data
-         */
-        if (!isset($requestData['POST']) || !isset($requestData['POST']['name'])) {
-            throw new BadRequestException('Name of playlist must be specified!');
-        }
-
-        $playlistName = $requestData['POST']['name'];
+        $playlistName = $requestData[$method]['name'];
 
         $playlistModel = new PlaylistModel;
 
@@ -85,13 +81,12 @@ class PlaylistController extends MusicPlayerAuthController
      */
     public function updatePlaylist($playlistId)
     {
+        $this->validatePresentedData(['newName']);
+
         $requestData = $this->request->getRawData();
+        $method = $this->request->getMethod();
 
-        if (!isset($requestData['PUT']) || !isset($requestData['PUT']['newName'])) {
-            throw new BadRequestException('New name of playlist must be specified!');
-        }
-
-        $playlistName = $requestData['PUT']['newName'];
+        $playlistName = $requestData[$method]['newName'];
 
         $playlistModel = new PlaylistModel;
 
@@ -135,16 +130,14 @@ class PlaylistController extends MusicPlayerAuthController
      */
     public function addSongToPlaylist($playlistId)
     {
+        $this->validatePresentedData(['track', 'artist', 'album']);
+
         $requestData = $this->request->getRawData();
+        $method = $this->request->getMethod();
 
-        if (!isset($requestData['PUT']) || !isset($requestData['PUT']['track']) || !isset($requestData['PUT']['artist'])
-            || !isset($requestData['PUT']['album'])) {
-            throw new BadRequestException('Track, artist and album must be specified!');
-        }
-
-        $track = $requestData['PUT']['track'];
-        $artist = $requestData['PUT']['artist'];
-        $album = $requestData['PUT']['album'];
+        $track = $requestData[$method]['track'];
+        $artist = $requestData[$method]['artist'];
+        $album = $requestData[$method]['album'];
 
         $songsModel = new SongsModel;
 

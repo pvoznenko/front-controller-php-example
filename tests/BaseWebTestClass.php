@@ -28,7 +28,7 @@ class BaseWebTestClass extends \PHPUnit_Framework_TestCase
      */
     public function getAuthHeaders()
     {
-        $request = $this->client->post('api/users/authentication', ['Accept' => 'application/json']);
+        $request = $this->client->post(BASE_API_URL . '/users/authentication', ['Accept' => 'application/json']);
         $response = $request->send();
         $decodedResponse = $response->json();
         return ['Accept' => 'application/json', 'token' => $decodedResponse['token']];

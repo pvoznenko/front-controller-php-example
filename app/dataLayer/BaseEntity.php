@@ -51,12 +51,12 @@ class BaseEntity
      * Method returns correct offset of data for DB limit
      *
      * @param int $page - page number
+     * @param int $limit - default BaseEntity::DEFAULT_ROWS_LIMIT
+     *
      * @return int
      */
-    public static function calculateOffset($page = 1)
+    public static function calculateOffset($page = 1, $limit = self::DEFAULT_ROWS_LIMIT)
     {
-        $limit = self::DEFAULT_ROWS_LIMIT;
-
         return ($page - 1) * $limit;
     }
 
