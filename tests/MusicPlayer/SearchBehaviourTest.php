@@ -1,12 +1,12 @@
 <?php
-namespace tests\MusicPlayer;
+namespace Tests\MusicPlayer;
 
-use tests\BaseWebTestClass;
+use Tests\BaseWebTestClass;
 use \Guzzle\Http\Exception\BadResponseException;
 
 /**
  * Class SearchBehaviourTest
- * @package tests\MusicPlayer
+ * @package Tests\MusicPlayer
  *
  * Here we going to test Search API
  */

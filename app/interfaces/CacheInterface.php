@@ -14,9 +14,10 @@ interface CacheInterface
      *
      * @param string $key
      * @param string $value
+     * @param int|null $expiresIn - in how many seconds value should be expired, default null
      * @return CacheInterface
      */
-    public function set($key, $value);
+    public function set($key, $value, $expiresIn = null);
 
     /**
      * Get value by key from the cache
@@ -32,9 +33,9 @@ interface CacheInterface
      *
      * @param string $key
      *
-     * @return CacheInterface
+     * @return int - the number of removed keys
      */
-    public function clear($key);
+    public function del($key);
 
     /**
      * Checks if specified key is in cache
@@ -43,5 +44,5 @@ interface CacheInterface
      *
      * @return bool
      */
-    public function isPresent($key);
+    public function exists($key);
 } 

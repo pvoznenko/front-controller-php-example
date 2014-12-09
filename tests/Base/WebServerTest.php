@@ -1,7 +1,7 @@
 <?php
-namespace tests\Base;
+namespace Tests\Base;
 
-use tests\BaseWebTestClass;
+use Tests\BaseWebTestClass;
 use \Guzzle\Http\Exception\BadResponseException;
 
 class WebServerTest extends BaseWebTestClass

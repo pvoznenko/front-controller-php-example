@@ -4,9 +4,22 @@ namespace App\Services;
 use App\Interfaces\ServiceInterface;
 use App\ServiceContainer;
 use App\Interfaces\CacheInterface;
+use Predis\Client;
 
 class Cache implements ServiceInterface, CacheInterface
 {
+    /**
+     * Prefix that Redis use to store data
+     */
+    const REDIS_PREFIX = 'MP:';
+
+    /**
+     * Redis client
+     *
+     * @var Client
+     */
+    private $client;
+
     /**
      * Should return unique name of the service
      *
@@ -26,11 +39,12 @@ class Cache implements ServiceInterface, CacheInterface
     public static function initializeService(ServiceContainer $container, $injection = null)
     {
         $className = __CLASS__;
-        $container->set(static::getServiceName(), function() use($className) { return new $className; });
+        $container->set(static::getServiceName(), function() use($className, $injection) { return new $className($injection); });
     }
 
-    protected function __construct()
+    protected function __construct(Client $client)
     {
+        $this->client = $client;
     }
 
     /**
@@ -38,10 +52,18 @@ class Cache implements ServiceInterface, CacheInterface
      *
      * @param string $key
      * @param string $value
+     * @param int|null $expiresIn - in how many seconds value should be expired, default null
      * @return $this
      */
-    public function set($key, $value)
+    public function set($key, $value, $expiresIn = null)
     {
+        $expireResolution = $expiresIn;
+
+        if ($expiresIn != null) {
+            $expireResolution += time();
+        }
+
+        $this->client->set(self::REDIS_PREFIX . $key, $value, $expireResolution);
         return $this;
     }
 
@@ -54,7 +76,7 @@ class Cache implements ServiceInterface, CacheInterface
      */
     public function get($key)
     {
-        return '';
+        return $this->client->get(self::REDIS_PREFIX . $key);
     }
 
     /**
@@ -62,11 +84,11 @@ class Cache implements ServiceInterface, CacheInterface
      *
      * @param string $key
      *
-     * @return $this
+     * @return int - the number of removed keys
      */
-    public function clear($key)
+    public function del($key)
     {
-        return $this;
+        return $this->client->del(self::REDIS_PREFIX . $key);
     }
 
     /**
@@ -76,8 +98,8 @@ class Cache implements ServiceInterface, CacheInterface
      *
      * @return bool
      */
-    public function isPresent($key)
+    public function exists($key)
     {
-        return false;
+        return (bool)$this->client->exists(self::REDIS_PREFIX . $key);
     }
 }

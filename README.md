@@ -44,6 +44,10 @@ interface to communicate with PDO driver. I used common SQL syntactics, so it sh
 PDO driver with connection to MySQL database without changing Entity layer. If needed another storage with totally
 different interface for example, you exchange DB service and Entity layer.
 
+For the key-value storage of cached data I chose Redis, since compare to analogs, in Redis if needed you can configure
+data persistence with different options (also you can scale it). For work with Redis from the PHP I chose library
+[Predis](https://github.com/nrk/predis) - it is only one external library used for whole application (if not count tests).
+
 Additionally to Front Controller I implemented Dependency Injection Container with Services (Service Container). Each
 Service is injectable and implement specific interface (so could be exchange with another object that implements the same
 interface) and initialized on demand (lazy loading). List of existing Services:
@@ -61,12 +65,30 @@ Application life cycle represents by following sequence:
 Request -> Route -> Dispatch -> Controller -> Model -> Entity -> Services (Storage, etc)
 ```
 
-When Controller got all needed data from the Model it generates Response to the client.
+When Controller gets all needed data from the Model it generates Response to the client.
 
 ## System Requirements
 
-To run current web server you should have at least `PHP v5.4` with `SQLite`, `cURL` and `mcrypt` (by default `mcrypt` in
-Mac OS X is not installed).
+To run current web server you should have [Redis](http://redis.io/) installed and at least `PHP v5.4` with `SQLite`,
+`cURL` and `mcrypt` (by default `mcrypt` in Mac OS X is not installed).
+
+## Application Configuration
+
+You can configure application through configuration file at: `config\config.php`
+
+## Setup
+
+Before running application you need to install dependencies with [Composer](https://getcomposer.org/) by using following
+command:
+
+```
+$ composer install
+```
+
+It will download all dependencies that needs for tests and create autoload file that application uses as PSR-4 Autoloader.
+
+Since in scope of the test task it was not recommended to use external libraries, so for application I used only Redis
+client library, all another dependencies only for testing (to test web server).
 
 ## Run Web Server
 
@@ -97,19 +119,10 @@ $ php -S localhost:7070 -t /var/www/public
 
 Your server should be accessible from `http://localhost:7070/`.
 
-## Application Configuration
-
-You can configure application through configuration file at: `config\config.php`
-
 ## Test
 
-To run test, first you need to download all dependencies by using [Composer](https://getcomposer.org/):
-
-```
-$ composer install
-```
-
-After all dependencies you can run test with following command:
+To run tests, you need that Composer downloaded all dependencies (see section Setup). You can run tests with following
+command:
 
 ```
 $ ./vendor/bin/phpunit
