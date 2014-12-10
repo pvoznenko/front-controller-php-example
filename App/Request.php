@@ -3,6 +3,7 @@ namespace App;
 
 use App\Exceptions\NotAcceptableException;
 use App\Interfaces\RequestInterface;
+use SebastianBergmann\Exporter\Exception;
 
 /**
  * Class Request
@@ -94,6 +95,31 @@ class Request implements RequestInterface
     }
 
     /**
+     * Returns requested $key from the data in request
+     *
+     * @param string $key
+     * @param bool $getRawData - default false, if true will return value from not filtered data, possible XSS
+     *
+     * @throws \InvalidArgumentException - if key or request method not exists
+     *
+     * @return string
+     */
+    public function get($key, $getRawData = false)
+    {
+        $data = $getRawData ? $this->getRawData() : $this->getData();
+
+        if (!isset($data[$this->method])) {
+            throw new \InvalidArgumentException(sprintf('The are no data in request method "%s".', $this->method));
+        }
+
+        if (!isset($data[$this->method][$key])) {
+            throw new \InvalidArgumentException(sprintf('The request data key in method type "%s" and key "%s" is invalid.', $this->method, $key));
+        }
+
+        return $data[$this->method][$key];
+    }
+
+    /**
      * Method filters incoming data
      *
      * @param array $data - array with raw data from the client
@@ -175,7 +201,7 @@ class Request implements RequestInterface
     public function getParam($key)
     {
         if (!isset($this->params[$key])) {
-            throw new \InvalidArgumentException('The request parameter with key "' . $key . '" is invalid.');
+            throw new \InvalidArgumentException(sprintf('The request parameter with key "%s" is invalid.', $key));
         }
 
         return $this->params[$key];

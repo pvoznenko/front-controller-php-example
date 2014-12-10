@@ -41,14 +41,8 @@ class SearchModel extends BaseModel
      */
     public function search($query, $type, $page)
     {
-        $cacheKey = sprintf('search:%s', base64_encode($query . $type . $page));
-
-        $callback = function($this) use($query, $type, $page) {
-            $offset = BaseEntity::calculateOffset($page, SpotifyAPI::SPOTIFY_DEFAULT_ITEMS_LIMIT);
-            return $this->spotifyApi->search($query, $type, $offset)->getData();
-        };
-
-        return $this->getData($cacheKey, $callback);
+        $offset = BaseEntity::calculateOffset($page, SpotifyAPI::SPOTIFY_DEFAULT_ITEMS_LIMIT);
+        return $this->spotifyApi->search($query, $type, $offset)->getData();
     }
 
     /**
@@ -82,33 +76,5 @@ class SearchModel extends BaseModel
         }
 
         return $data;
-    }
-
-    /**
-     * Get data from cache
-     *
-     * @param string $key - cache key
-     *
-     * @return SpotifySearchResponseContainer
-     */
-    protected function getFromCache($key)
-    {
-        $data = $this->cache->get($key);
-        return (new CacheDataContainer($data))->getDataFromSerialize();
-    }
-
-    /**
-     * Set data to cache
-     *
-     * @param string $key - cache key
-     * @param SpotifySearchResponseContainer $data - data to store
-     * @param int|null $expiresIn - in how many seconds value should be expired, default null
-     *
-     * @return CacheInterface
-     */
-    protected function setToCache($key, $data, $expiresIn = null)
-    {
-        $object = (new CacheDataContainer($data))->serialize();
-        return $this->cache->set($key, $object->__toString(), $expiresIn);
     }
 } 

@@ -26,18 +26,21 @@ class PlaylistController extends MusicPlayerAuthController
     public function getPlaylist($playlistId = null)
     {
         $page = $this->getPageNumber();
-
         $playlistModel = new PlaylistModel;
-        $playlist = $playlistModel->getPlaylist($this->userId, $playlistId, $page);
+        $currentUserId = $this->user->getId();
+
+        $playlist = $playlistModel->getPlaylist($currentUserId, $playlistId, $page);
 
         $responseData = ['playlist' => $playlist];
 
         if ($playlistId !== null) {
+            // if $playlistId specified then we need to return specific playlist for user otherwise show 404
             if (empty($playlist)) {
                 throw new NotFoundException('Playlist not found!');
             }
         } else {
-            $numberOfResults = $playlistModel->getPlaylistCount($this->userId);
+            // if $playlistId not specified then we need to return list of available playlist for user
+            $numberOfResults = $playlistModel->getPlaylistCount($currentUserId);
             $responseData['info'] = $this->getPaginationBlock($page, $numberOfResults);
         }
 
@@ -53,20 +56,19 @@ class PlaylistController extends MusicPlayerAuthController
     {
         $this->validatePresentedData(['name']);
 
-        $requestData = $this->request->getData();
-        $method = $this->request->getMethod();
-
-        $playlistName = $requestData[$method]['name'];
+        $playlistName = $this->request->get('name');
 
         $playlistModel = new PlaylistModel;
 
-        if ($playlistModel->getPlaylistByName($playlistName, $this->userId) !== false) {
+        $currentUserId = $this->user->getId();
+
+        if ($playlistModel->getPlaylistByName($playlistName, $currentUserId) !== false) {
             throw new BadRequestException('Playlist with this name already exists!');
         }
 
-        $playlistId = $playlistModel->addPlaylist($playlistName, $this->userId);
+        $playlistId = $playlistModel->addPlaylist($playlistName, $currentUserId);
 
-        $responseData = ['playlist' => ['id' => $playlistId, 'userId' => $this->userId, 'name' => $playlistName]];
+        $responseData = ['playlist' => ['id' => $playlistId, 'userId' => $currentUserId, 'name' => $playlistName]];
 
         $this->response->addHeader('201 Created')->send($responseData);
     }
@@ -83,18 +85,15 @@ class PlaylistController extends MusicPlayerAuthController
     {
         $this->validatePresentedData(['newName']);
 
-        $requestData = $this->request->getData();
-        $method = $this->request->getMethod();
-
-        $playlistName = $requestData[$method]['newName'];
-
+        $playlistName = $this->request->get('newName');
         $playlistModel = new PlaylistModel;
+        $currentUserId = $this->user->getId();
 
-        if ($playlistModel->getPlaylistByName($playlistName, $this->userId) !== false) {
+        if ($playlistModel->getPlaylistByName($playlistName, $currentUserId) !== false) {
             throw new BadRequestException('Playlist with this name already exists!');
         }
 
-        $updated = $playlistModel->updatePlaylist($playlistId, $this->userId, $playlistName);
+        $updated = $playlistModel->updatePlaylist($playlistId, $currentUserId, $playlistName);
 
         if (!$updated) {
             throw new NotFoundException('Playlist not found!');
@@ -112,9 +111,10 @@ class PlaylistController extends MusicPlayerAuthController
      */
     public function deletePlaylist($playlistId)
     {
-        $deleted = (new PlaylistModel)->deletePlaylist($playlistId, $this->userId);
+        $deleted = (new PlaylistModel)->deletePlaylist($playlistId, $this->user->getId());
 
         if (!$deleted) {
+            // Duplication of response will rise `404`, I know it is Holly War about idempotent in HTTP and DELETE
             throw new NotFoundException('Playlist not found!');
         }
 
@@ -132,20 +132,18 @@ class PlaylistController extends MusicPlayerAuthController
     {
         $this->validatePresentedData(['track', 'artist', 'album']);
 
-        $requestData = $this->request->getData();
-        $method = $this->request->getMethod();
-
-        $track = $requestData[$method]['track'];
-        $artist = $requestData[$method]['artist'];
-        $album = $requestData[$method]['album'];
+        $track = $this->request->get('track');
+        $artist = $this->request->get('artist');
+        $album = $this->request->get('album');
 
         $songsModel = new SongsModel;
+        $currentUserId = $this->user->getId();
 
-        if ($songsModel->isSongInPlaylist($track, $artist, $album, $playlistId, $this->userId)) {
+        if ($songsModel->isSongInPlaylist($track, $artist, $album, $playlistId, $currentUserId)) {
             throw new BadRequestException('Song already in specified playlist!');
         }
 
-        $songId = $songsModel->addSongToPlaylist($track, $artist, $album, $playlistId, $this->userId);
+        $songId = $songsModel->addSongToPlaylist($track, $artist, $album, $playlistId, $currentUserId);
 
         $responseData = ['song' => [
             'id' => $songId,
@@ -153,7 +151,7 @@ class PlaylistController extends MusicPlayerAuthController
             'artist' => $artist,
             'album' => $album,
             'playlistId' => $playlistId,
-            'userId' => $this->userId
+            'userId' => $currentUserId
         ]];
 
         $this->response->addHeader('201 Created')->send($responseData);
@@ -170,7 +168,8 @@ class PlaylistController extends MusicPlayerAuthController
      */
     public function getSongsFromPlaylist($playlistId, $songId = null)
     {
-        $playlist = (new PlaylistModel)->getPlaylist($this->userId, $playlistId);
+        $currentUserId = $this->user->getId();
+        $playlist = (new PlaylistModel)->getPlaylist($currentUserId, $playlistId);
 
         if (empty($playlist)) {
             throw new NotFoundException('Playlist not found!');
@@ -180,17 +179,19 @@ class PlaylistController extends MusicPlayerAuthController
 
         $songsModel = new SongsModel;
 
-        $data = $songsModel->getSongsFromPlaylist($playlistId, $this->userId, $songId, $page);
+        $data = $songsModel->getSongsFromPlaylist($playlistId, $currentUserId, $songId, $page);
 
         $responseKey = $songId !== null ? 'song' : 'songs';
         $responseData = [$responseKey => $data];
 
         if ($songId !== null) {
+            // if $songId specified then we need to return specific song for user otherwise show 404
             if (empty($data)) {
                 throw new NotFoundException('Song not found!');
             }
         } else {
-            $numberOfResults = $songsModel->getSongsCount($playlistId, $this->userId);
+            // if $songId not specified then we need to return list of available songs in playlist for user
+            $numberOfResults = $songsModel->getSongsCount($playlistId, $currentUserId);
             $responseData['info'] = $this->getPaginationBlock($page, $numberOfResults);
         }
 
@@ -207,9 +208,10 @@ class PlaylistController extends MusicPlayerAuthController
      */
     public function deleteSongFromPlaylist($playlistId, $songId)
     {
-        $deleted = (new SongsModel)->deleteSongFromPlaylist($songId, $playlistId, $this->userId);
+        $deleted = (new SongsModel)->deleteSongFromPlaylist($songId, $playlistId, $this->user->getId());
 
         if (!$deleted) {
+            // Duplication of response will rise `404`, I know it is Holly War about idempotent in HTTP and DELETE
             throw new NotFoundException('Song not found!');
         }
 

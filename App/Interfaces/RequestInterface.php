@@ -51,4 +51,16 @@ interface RequestInterface
      * @param array
      */
     public function getData();
+
+    /**
+     * Returns requested $key from the data in request
+     *
+     * @param string $key
+     * @param bool $getRawData - default false, if true will return value from not filtered data, possible XSS
+     *
+     * @throws \InvalidArgumentException - if key or request method not exists
+     *
+     * @return string
+     */
+    public function get($key, $getRawData = false);
 } 

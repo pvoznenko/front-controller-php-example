@@ -24,7 +24,7 @@ $redisClient = new \Predis\Client([
 App\Services\DB::initializeService($serviceContainer, $dbConnection);
 App\Services\Cache::initializeService($serviceContainer, $redisClient);
 App\Services\Curl::initializeService($serviceContainer);
-App\Services\SpotifyAPI::initializeService($serviceContainer);
+App\Services\SpotifyAPI::initializeService($serviceContainer, $serviceContainer);
 
 $request = new App\Request($requestData['REQUEST_URI'], $requestData['REQUEST_METHOD'], $requestData);
 $response = new App\Response($responseVersion);

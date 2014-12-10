@@ -2,6 +2,7 @@
 namespace App\Services;
 
 use App\Containers\CacheDataContainer;
+use App\Interfaces\ContainerInterface;
 use App\Interfaces\ServiceInterface;
 use App\Interfaces\CurlInterface;
 use App\Interfaces\CacheInterface;
@@ -90,13 +91,11 @@ class SpotifyAPI implements ServiceInterface, SpotifyAPIInterface
     public static function initializeService(ServiceContainer $container, $injection = null)
     {
         $className = __CLASS__;
-        $container->set(static::getServiceName(), function() use($className) { return new $className; });
+        $container->set(static::getServiceName(), function() use($className, $injection) { return new $className($injection); });
     }
 
-    protected function __construct()
+    protected function __construct(ServiceContainer $serviceContainer)
     {
-        $serviceContainer = ServiceContainer::getInstance();
-
         $this->curl = $serviceContainer->get('Curl');
         $this->cache = $serviceContainer->get('Cache');
     }
@@ -126,7 +125,7 @@ class SpotifyAPI implements ServiceInterface, SpotifyAPIInterface
      * Get data from cache
      *
      * @param string $key - cache key
-     * @return SpotifyAuthContainer
+     * @return ContainerInterface
      */
     private function getFromCache($key)
     {
@@ -138,12 +137,12 @@ class SpotifyAPI implements ServiceInterface, SpotifyAPIInterface
      * Set data to cache
      *
      * @param string $key - cache key
-     * @param SpotifyAuthContainer $data - data to store
+     * @param ContainerInterface $data - data to store
      * @param int|null $expiresIn - in how many seconds value should be expired, default null
      *
      * @return CacheInterface
      */
-    private function setToCache($key, SpotifyAuthContainer $data, $expiresIn = null)
+    private function setToCache($key, ContainerInterface $data, $expiresIn = null)
     {
         $object = (new CacheDataContainer($data))->serialize();
         return $this->cache->set($key, $object->__toString(), $expiresIn);
@@ -227,31 +226,40 @@ class SpotifyAPI implements ServiceInterface, SpotifyAPIInterface
      */
     public function search($query, $type = '', $offset = 0)
     {
-        if ($type == '') {
-            $type = self::SPOTIFY_SEARCH_TYPE_TRACK;
-        } else {
-            $this->validateSearchType($type);
+        $cacheKey = sprintf('search:%s', base64_encode($query . $type . $offset));
+
+        $data = $this->getFromCache($cacheKey);
+
+        if (!($data instanceof SpotifySearchResultContainer)) {
+            if ($type == '') {
+                $type = self::SPOTIFY_SEARCH_TYPE_TRACK;
+            } else {
+                $this->validateSearchType($type);
+            }
+
+            $this->authorize();
+
+            $authHeader = $this->getAuthHeader();
+
+            $params = http_build_query(['q' => $query, 'type' => $type, 'offset' => (int)$offset]);
+            $searchUrl = self::SPOTIFY_SEARCH_URL . '?' . $params;
+
+            $responseCode = $this->curl->clearHeaders()
+                ->addHeader($authHeader)
+                ->get($searchUrl)
+                ->getResponseCode();
+
+            if ($responseCode != 200) {
+                throw new BadRequestException('Spotify search failed. Got response code: ' . $responseCode);
+            }
+
+            $response = $this->curl->getParsedResponse();
+
+            $data = (new SpotifySearchResultContainer($response))->setType($type);
+            $this->setToCache($cacheKey, $data);
         }
 
-        $this->authorize();
-
-        $authHeader = $this->getAuthHeader();
-
-        $params = http_build_query(['q' => $query, 'type' => $type, 'offset' => (int)$offset]);
-        $searchUrl = self::SPOTIFY_SEARCH_URL . '?' . $params;
-
-        $responseCode = $this->curl->clearHeaders()
-            ->addHeader($authHeader)
-            ->get($searchUrl)
-            ->getResponseCode();
-
-        if ($responseCode != 200) {
-            throw new BadRequestException('Spotify search failed. Got response code: ' . $responseCode);
-        }
-
-        $response = $this->curl->getParsedResponse();
-
-        return (new SpotifySearchResultContainer($response))->setType($type);
+        return $data;
     }
 
     /**

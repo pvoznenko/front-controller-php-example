@@ -2,6 +2,7 @@
 namespace MusicPlayer;
 
 use App\BaseController;
+use App\Containers\UserDataContainer;
 use App\DataLayer\BaseEntity;
 use App\Interfaces\RequestInterface;
 use App\Interfaces\ResponseInterface;
@@ -18,11 +19,11 @@ use App\Exceptions\BadRequestException;
 abstract class MusicPlayerAuthController extends BaseController
 {
     /**
-     * Authorized user id
+     * Authorized user
      *
-     * @var int
+     * @var UserDataContainer
      */
-    protected $userId;
+    protected $user;
 
     /**
      * Method handle execution of controller's action specified in Route object
@@ -48,7 +49,11 @@ abstract class MusicPlayerAuthController extends BaseController
             throw new UnauthorizedException('auth token wrong!');
         }
 
-        $this->userId = $userId;
+        $user = new \stdClass;
+        $user->id = $userId;
+        $user->token = $token;
+
+        $this->user = new UserDataContainer($user);
 
         parent::execute($action, $request, $response);
     }
@@ -60,10 +65,11 @@ abstract class MusicPlayerAuthController extends BaseController
      */
     protected function getPageNumber()
     {
-        $requestData = $this->request->getRawData();
-        $method = $this->request->getMethod();
-
-        $page = isset($requestData[$method]) && isset($requestData[$method]['page']) ? (int)$requestData[$method]['page'] : 1;
+        try {
+            $page = (int)$this->request->get('page', true);
+        } catch(\InvalidArgumentException $exception) {
+            $page = 1;
+        }
 
         if ($page <= 0) {
             $page = 1;

@@ -242,6 +242,7 @@ $ curl -i -H Accept:application/json -X DELETE -G http://localhost:7070/api/v1/p
 ```
 
 * If everything is OK you should get response code `204`;
+* Duplication of response will rise `404`, I know it is Holly War about idempotent in HTTP and DELETE;
 * If you tried to delete not yours playlist (not existing for authorized user) server will response with code `404`.
 
 ##### GET /api/v1/playlist/{playlistId}/songs
@@ -293,6 +294,7 @@ $ curl -i -H Accept:application/json -X DELETE -G http://localhost:7070/api/v1/p
 ```
 
 * If everything is OK you should get response code `204`;
+* Duplication of response will rise `404`, I know it is Holly War about idempotent in HTTP and DELETE;
 * If you tried to delete song from not yours playlist (not existing for authorized user) server will response with code `404`.
 
 #### Search

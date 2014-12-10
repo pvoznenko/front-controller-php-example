@@ -20,10 +20,8 @@ class SearchController extends MusicPlayerAuthController
      */
     public function search($type)
     {
-        $requestData = $this->request->getRawData();
-        $method = $this->request->getMethod();
         $page = $this->getPageNumber();
-        $query = $requestData[$method]['q'];
+        $query = $this->request->get('q', true);
 
         $searchModel = new SearchModel;
 
