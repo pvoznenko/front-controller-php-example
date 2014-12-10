@@ -59,41 +59,40 @@ abstract class MusicPlayerAuthController extends BaseController
     }
 
     /**
-     * Method returns page number for pagination
+     * Method returns offset for pagination
      *
      * @return int
      */
-    protected function getPageNumber()
+    protected function getOffsetNumber()
     {
         try {
-            $page = (int)$this->request->get('page', true);
+            $offset = (int)$this->request->get('offset', true);
         } catch(\InvalidArgumentException $exception) {
-            $page = 1;
+            $offset = 0;
         }
 
-        if ($page <= 0) {
-            $page = 1;
+        if ($offset < 0) {
+            $offset = 0;
         }
 
-        return $page;
+        return $offset;
     }
 
     /**
      * Method returns array with mandatory information for the pagination
      *
-     * @param int $page
+     * @param int $offset
      * @param int $numberOfResults
      * @param int $limit - default BaseEntity::DEFAULT_ROWS_LIMIT
      *
      * @return array
      */
-    protected function getPaginationBlock($page, $numberOfResults, $limit = BaseEntity::DEFAULT_ROWS_LIMIT)
+    protected function getPaginationBlock($offset, $numberOfResults, $limit = BaseEntity::DEFAULT_ROWS_LIMIT)
     {
         return [
             'num_results' => $numberOfResults,
             'limit' => $limit,
-            'offset' => BaseEntity::calculateOffset($page, $limit),
-            'page' => $page
+            'offset' => $offset
         ];
     }
 

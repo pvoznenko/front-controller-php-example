@@ -27,11 +27,11 @@ interface SpotifyAPIInterface
      *
      * @param string $query - search query
      * @param string $type - type of search, allowed only SpotifyAPI::SPOTIFY_SEARCH_TYPE_*
-     * @param int $page - number of page in search for pagination
+     * @param int $offset - data offset in search for pagination
      *
      * @return SpotifySearchResultContainer
      *
      * @throws BadRequestException - if wrong type provided or search failed
      */
-    public function search($query, $type = '', $page = 1);
+    public function search($query, $type = '', $offset = 0);
 } 

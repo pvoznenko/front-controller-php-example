@@ -17,6 +17,10 @@ class SearchBehaviourTest extends BaseWebTestClass
      */
     public function testSearchFailures()
     {
+        if (TEST_SPOTIFY_LIVE_API == false) {
+            return;
+        }
+
         $authHeaders = $this->getAuthHeaders();
 
         try {
@@ -38,7 +42,7 @@ class SearchBehaviourTest extends BaseWebTestClass
         }
 
         try {
-            $this->client->get(BASE_API_URL . '/search/track?page', $authHeaders)->send();
+            $this->client->get(BASE_API_URL . '/search/track?offset', $authHeaders)->send();
         } catch (BadResponseException $exception) {
             $this->assertEquals($exception->getResponse()->getStatusCode(), 404, 'Status of response should be 404!');
         }
@@ -55,6 +59,10 @@ class SearchBehaviourTest extends BaseWebTestClass
      */
     public function testSearchAlbum()
     {
+        if (TEST_SPOTIFY_LIVE_API == false) {
+            return;
+        }
+
         $this->overallSearchTest('The Best Of', 'album');
     }
 
@@ -63,6 +71,10 @@ class SearchBehaviourTest extends BaseWebTestClass
      */
     public function testSearchArtist()
     {
+        if (TEST_SPOTIFY_LIVE_API == false) {
+            return;
+        }
+
         $this->overallSearchTest('"queen"', 'artist');
     }
 
@@ -71,6 +83,10 @@ class SearchBehaviourTest extends BaseWebTestClass
      */
     public function testSearchTrack()
     {
+        if (TEST_SPOTIFY_LIVE_API == false) {
+            return;
+        }
+
         /**
          * Simple search
          */
@@ -103,9 +119,9 @@ class SearchBehaviourTest extends BaseWebTestClass
         $this->assertTrue(isset($decodedResponse['result']) && count($decodedResponse['result']) == $decodedResponse['info']['limit']
             , 'Data regarding result should be presented!');
 
-        $page = (int)($decodedResponse['info']['num_results'] / $decodedResponse['info']['limit']) + 10;
+        $offset = $decodedResponse['info']['num_results'] + $decodedResponse['info']['limit'];
 
-        $queryParams = http_build_query(['q' => $searchTerm, 'page' => $page]);
+        $queryParams = http_build_query(['q' => $searchTerm, 'offset' => $offset]);
         $request = $this->client->get(BASE_API_URL . '/search/' . $type . '?' . $queryParams, $authHeaders);
         $response = $request->send();
         $decodedResponse = $response->json();

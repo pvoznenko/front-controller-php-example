@@ -153,7 +153,7 @@ class PlaylistBehaviourTest extends BaseWebTestClass
          *
          * Following block should return our new playlist
          */
-        $request = $this->client->get(BASE_API_URL . '/playlist?page=1', $authHeaders);
+        $request = $this->client->get(BASE_API_URL . '/playlist?offset=0', $authHeaders);
         $response = $request->send();
         $decodedResponse = $response->json();
         $this->assertEquals($response->getStatusCode(), 200, 'Status of response should be 200!');
@@ -165,7 +165,7 @@ class PlaylistBehaviourTest extends BaseWebTestClass
         /**
          * Following block should return empty list
          */
-        $request = $this->client->get(BASE_API_URL . '/playlist?page=2', $authHeaders);
+        $request = $this->client->get(BASE_API_URL . '/playlist?offset=20', $authHeaders);
         $response = $request->send();
         $decodedResponse = $response->json();
         $this->assertEquals($response->getStatusCode(), 200, 'Status of response should be 200!');
@@ -173,9 +173,9 @@ class PlaylistBehaviourTest extends BaseWebTestClass
             , 'Should be empty response');
 
         /**
-         * Following block should return playlist list as page would be 1
+         * Following block should return playlist list
          */
-        $request = $this->client->get(BASE_API_URL . '/playlist?page=0', $authHeaders);
+        $request = $this->client->get(BASE_API_URL . '/playlist?offset=0', $authHeaders);
         $response = $request->send();
         $decodedResponse = $response->json();
         $this->assertEquals($response->getStatusCode(), 200, 'Status of response should be 200!');
@@ -187,7 +187,7 @@ class PlaylistBehaviourTest extends BaseWebTestClass
          */
         try {
             $this->client
-                ->get(BASE_API_URL . '/playlist?page=-1', $authHeaders)
+                ->get(BASE_API_URL . '/playlist?offset=-1', $authHeaders)
                 ->send();
         } catch (BadResponseException $exception) {
             $this->assertEquals($exception->getResponse()->getStatusCode(), 404, 'Status of response should be 404!');
@@ -198,7 +198,7 @@ class PlaylistBehaviourTest extends BaseWebTestClass
          */
         try {
             $this->client
-                ->get(BASE_API_URL . '/playlist?page=asd', $authHeaders)
+                ->get(BASE_API_URL . '/playlist?offset=asd', $authHeaders)
                 ->send();
         } catch (BadResponseException $exception) {
             $this->assertEquals($exception->getResponse()->getStatusCode(), 404, 'Status of response should be 404!');
@@ -511,7 +511,7 @@ class PlaylistBehaviourTest extends BaseWebTestClass
          *
          * Following block should return our song list
          */
-        $request = $this->client->get($playlistSongsUri . '?page=1', $authHeaders);
+        $request = $this->client->get($playlistSongsUri . '?offset=0', $authHeaders);
         $response = $request->send();
         $decodedResponse = $response->json();
         $this->assertEquals($response->getStatusCode(), 200, 'Status of response should be 200!');
@@ -523,7 +523,7 @@ class PlaylistBehaviourTest extends BaseWebTestClass
         /**
          * Following block should return empty list
          */
-        $request = $this->client->get($playlistSongsUri . '?page=2', $authHeaders);
+        $request = $this->client->get($playlistSongsUri . '?offset=20', $authHeaders);
         $response = $request->send();
         $decodedResponse = $response->json();
 
@@ -533,9 +533,9 @@ class PlaylistBehaviourTest extends BaseWebTestClass
 
 
         /**
-         * Following block should return song list, act as page 1
+         * Following block should return song list
          */
-        $request = $this->client->get($playlistSongsUri . '?page=0', $authHeaders);
+        $request = $this->client->get($playlistSongsUri . '?offset=0', $authHeaders);
         $response = $request->send();
         $decodedResponse = $response->json();
         $this->assertEquals($response->getStatusCode(), 200, 'Status of response should be 200!');
@@ -547,7 +547,7 @@ class PlaylistBehaviourTest extends BaseWebTestClass
          */
         try {
             $this->client
-                ->get($playlistSongsUri . '?page=-2', $authHeaders)
+                ->get($playlistSongsUri . '?offset=-2', $authHeaders)
                 ->send();
         } catch (BadResponseException $exception) {
             $this->assertEquals($exception->getResponse()->getStatusCode(), 404, 'Status of response should be 404!');
@@ -558,7 +558,7 @@ class PlaylistBehaviourTest extends BaseWebTestClass
          */
         try {
             $this->client
-                ->get($playlistSongsUri . '?page=asd', $authHeaders)
+                ->get($playlistSongsUri . '?offset=asd', $authHeaders)
                 ->send();
         } catch (BadResponseException $exception) {
             $this->assertEquals($exception->getResponse()->getStatusCode(), 404, 'Status of response should be 404!');

@@ -27,6 +27,6 @@
         <const name="WEB_SERVER_HOST" value="localhost" />
         <const name="WEB_SERVER_PORT" value="7072" />
         <const name="WEB_SERVER_DOCROOT" value="./server" />
-        <const name="TEST_SPOTIFY_LIVE_API" value="false" />
+        <const name="TEST_SPOTIFY_LIVE_API" value="true" />
     </php>
 </phpunit>

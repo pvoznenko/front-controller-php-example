@@ -30,14 +30,14 @@ class SongsModel extends BaseModel
      * @param int $playlistId - playlist id
      * @param int $userId - user id
      * @param int|null $songId - song id, default null
-     * @param int $page - current page of pagination data, default 1
+     * @param int $offset - current offset for data pagination, default 0
      *
      * @return array - song(s) data or if not exist empty array
      */
-    public function getSongsFromPlaylist($playlistId, $userId, $songId = null, $page = 1)
+    public function getSongsFromPlaylist($playlistId, $userId, $songId = null, $offset = 0)
     {
-        $cacheKey = sprintf('songs:%d:%d:getSongsFromPlaylist:%d:%d', $userId, $playlistId, $songId, $page);
-        $callback = function($this) use($playlistId, $userId, $songId, $page) { return $this->entity->getSongsFromPlaylist($playlistId, $userId, $songId, $page); };
+        $cacheKey = sprintf('songs:%d:%d:getSongsFromPlaylist:%d:%d', $userId, $playlistId, $songId, $offset);
+        $callback = function($this) use($playlistId, $userId, $songId, $offset) { return $this->entity->getSongsFromPlaylist($playlistId, $userId, $songId, $offset); };
 
         return $this->getData($cacheKey, $callback);
     }

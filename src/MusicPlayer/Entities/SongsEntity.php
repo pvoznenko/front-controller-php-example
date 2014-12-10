@@ -26,11 +26,11 @@ class SongsEntity extends BaseEntity
      * @param int $playlistId - playlist id
      * @param int $userId - user id
      * @param int|null $songId - song id, default null
-     * @param int $page - current page of pagination data, default 1
+     * @param int $offset - current offset for data pagination, default 0
      *
      * @return array - song(s) data or if not exist empty array
      */
-    public function getSongsFromPlaylist($playlistId, $userId, $songId = null, $page = 1)
+    public function getSongsFromPlaylist($playlistId, $userId, $songId = null, $offset = 0)
     {
         $selectData = ['id', 'user_id', 'playlist_id', 'track', 'artist', 'album'];
 
@@ -41,10 +41,10 @@ class SongsEntity extends BaseEntity
 
         if ($songId !== null) {
             $data['id'] = new Param($songId, SQLITE3_INTEGER);
-            $page = null;
+            $offset = null;
         }
 
-        $result = $this->selectData($selectData, $data, \PDO::FETCH_ASSOC, $page);
+        $result = $this->selectData($selectData, $data, \PDO::FETCH_ASSOC, $offset);
 
         return $result === false ? [] : $result;
     }

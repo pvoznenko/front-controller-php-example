@@ -20,15 +20,15 @@ class SearchController extends MusicPlayerAuthController
      */
     public function search($type)
     {
-        $page = $this->getPageNumber();
+        $offset = $this->getOffsetNumber();
         $query = $this->request->get('q', true);
 
         $searchModel = new SearchModel;
 
-        $data = $searchModel->search($query, $type, $page);
+        $data = $searchModel->search($query, $type, $offset);
         $numberOfResults = $data->getTotal();
 
-        $responseData['info'] = $this->getPaginationBlock($page, $numberOfResults, SpotifyAPI::SPOTIFY_DEFAULT_ITEMS_LIMIT);
+        $responseData['info'] = $this->getPaginationBlock($offset, $numberOfResults, SpotifyAPI::SPOTIFY_DEFAULT_ITEMS_LIMIT);
         $responseData['result'] = $numberOfResults == 0 ? [] : $searchModel->createResponse($data, $type);
 
         $this->response->addHeader('200 OK')->send($responseData);

@@ -186,16 +186,16 @@ token in header with key `token`.
 You can get list of all playlist available for current authorized user:
 
 ```
-$ curl -i -H Accept:application/json -X GET -G http://localhost:7070/api/v1/playlist -H token:{token} -d page={page.?}
+$ curl -i -H Accept:application/json -X GET -G http://localhost:7070/api/v1/playlist -H token:{token} -d offset={offset.?}
 ```
 
-Variable `page` is optional for content pagination, by default is set to 1 and each page returns 20 rows of content.
-Variable `page` should be positive integer greater then 0, otherwise you would get `404` error. Variable `page` with
-value `0` will act as 1st page. Response will contain additional block with key `info` that contains information for
-pagination. Limitation made for not overflow response header size.
+Variable `offset` is optional for content pagination, by default is set to 0 and each page returns 20 rows of content.
+Variable `offset` should be positive integer equal or greater then 0, otherwise you would get `404` error. Response will
+contain additional block with key `info` that contains information for pagination. Limitation made for not overflow
+response header size.
 
 * If everything is OK you should get response code `200` with list of available playlist;
-* Server will response with code `404` if optional variable `page` specified and it not positive integer.
+* Server will response with code `404` if optional variable `offset` specified and it not positive integer.
 
 ##### GET /api/v1/playlist/{playlistId}
 
@@ -250,17 +250,17 @@ $ curl -i -H Accept:application/json -X DELETE -G http://localhost:7070/api/v1/p
 You can get list of all songs assigned to specified playlist for current authorized user:
 
 ```
-$ curl -i -H Accept:application/json -X GET -G http://localhost:7070/api/v1/playlist/{playlistId}/songs -H token:{token} -d page={page.?}
+$ curl -i -H Accept:application/json -X GET -G http://localhost:7070/api/v1/playlist/{playlistId}/songs -H token:{token} -d offset={offset.?}
 ```
 
-Variable `page` is optional for content pagination, by default is set to 1 and each page returns 20 rows of content.
-Variable `page` should be positive integer greater then 0, otherwise you would get `404` error. Variable `page` with
-value `0` will act as 1st page. Response will contain additional block with key `info` that contains information for
-pagination. Limitation made for not overflow response header size.
+Variable `offset` is optional for content pagination, by default is set to 0 and each page returns 20 rows of content.
+Variable `offset` should be positive integer equal or greater then 0, otherwise you would get `404` error. Response will
+contain additional block with key `info` that contains information for pagination. Limitation made for not overflow
+response header size.
 
 * If everything is OK you should get response code `200` with list of available songs;
 * If you tried to get songs from playlist that is not yours (not existing for authorized user) server will response with code `404`;
-* Server will response with code `404` if optional variable `page` specified and it not positive integer.
+* Server will response with code `404` if optional variable `offset` specified and it not positive integer.
 
 ##### GET /api/v1/playlist/{playlistId}/songs/{songId}
 
@@ -308,51 +308,51 @@ can read at official [Spotify Documentation](https://developer.spotify.com/web-a
 You can search by track:
 
 ```
-$ curl -i -H Accept:application/json -X GET -G http://localhost:7070/api/v1/search/track?q={searchQuery} -H token:{token} -d page={page.?}
+$ curl -i -H Accept:application/json -X GET -G http://localhost:7070/api/v1/search/track?q={searchQuery} -H token:{token} -d offset={offset.?}
 ```
 
-Variable `page` is optional for content pagination, by default is set to 1 and each page returns 20 rows of content.
-Variable `page` should be positive integer greater then 0, otherwise you would get `404` error. Variable `page` with
-value `0` will act as 1st page. Response will contain additional block with key `info` that contains information for
-pagination. Limitation made for not overflow response header size.
+Variable `offset` is optional for content pagination, by default is set to 0 and each page returns 20 rows of content.
+Variable `offset` should be positive integer equal or greater then 0, otherwise you would get `404` error. Response will
+contain additional block with key `info` that contains information for pagination. Limitation made for not overflow
+response header size.
 
 * If everything is OK you should get response code `200` with list of search results;
 * Server will response with code `404` if variable `q` not specified;
-* Server will response with code `404` if optional variable `page` specified and it not positive integer.
+* Server will response with code `404` if optional variable `offset` specified and it not positive integer.
 
 ##### GET /api/v1/search/album
 
 You can search by album:
 
 ```
-$ curl -i -H Accept:application/json -X GET -G http://localhost:7070/api/v1/search/album?q={searchQuery} -H token:{token} -d page={page.?}
+$ curl -i -H Accept:application/json -X GET -G http://localhost:7070/api/v1/search/album?q={searchQuery} -H token:{token} -d offset={offset.?}
 ```
 
-Variable `page` is optional for content pagination, by default is set to 1 and each page returns 20 rows of content.
-Variable `page` should be positive integer greater then 0, otherwise you would get `404` error. Variable `page` with
-value `0` will act as 1st page. Response will contain additional block with key `info` that contains information for
-pagination. Limitation made for not overflow response header size.
+Variable `offset` is optional for content pagination, by default is set to 0 and each page returns 20 rows of content.
+Variable `offset` should be positive integer equal or greater then 0, otherwise you would get `404` error. Response will
+contain additional block with key `info` that contains information for pagination. Limitation made for not overflow
+response header size.
 
 * If everything is OK you should get response code `200` with list of search results;
 * Server will response with code `404` if variable `q` not specified;
-* Server will response with code `404` if optional variable `page` specified and it not positive integer.
+* Server will response with code `404` if optional variable `offset` specified and it not positive integer.
 
 ##### GET /api/v1/search/artist
 
 You can search by artist:
 
 ```
-$ curl -i -H Accept:application/json -X GET -G http://localhost:7070/api/v1/search/artist?q={searchQuery} -H token:{token} -d page={page.?}
+$ curl -i -H Accept:application/json -X GET -G http://localhost:7070/api/v1/search/artist?q={searchQuery} -H token:{token} -d offset={offset.?}
 ```
 
-Variable `page` is optional for content pagination, by default is set to 1 and each page returns 20 rows of content.
-Variable `page` should be positive integer greater then 0, otherwise you would get `404` error. Variable `page` with
-value `0` will act as 1st page. Response will contain additional block with key `info` that contains information for
-pagination. Limitation made for not overflow response header size.
+Variable `offset` is optional for content pagination, by default is set to 0 and each page returns 20 rows of content.
+Variable `offset` should be positive integer equal or greater then 0, otherwise you would get `404` error. Response will
+contain additional block with key `info` that contains information for pagination. Limitation made for not overflow
+response header size.
 
 * If everything is OK you should get response code `200` with list of search results;
 * Server will response with code `404` if variable `q` not specified;
-* Server will response with code `404` if optional variable `page` specified and it not positive integer.
+* Server will response with code `404` if optional variable `offset` specified and it not positive integer.
 
 ### Exceptions
 

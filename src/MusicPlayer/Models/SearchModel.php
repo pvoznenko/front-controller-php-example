@@ -35,13 +35,12 @@ class SearchModel extends BaseModel
      *
      * @param string $query
      * @param string $type - search type, one of SpotifyAPI::SPOTIFY_SEARCH_TYPE_*
-     * @param int $page - page number
+     * @param int $offset - data offset
      *
      * @return SpotifySearchResponseContainer
      */
-    public function search($query, $type, $page)
+    public function search($query, $type, $offset)
     {
-        $offset = BaseEntity::calculateOffset($page, SpotifyAPI::SPOTIFY_DEFAULT_ITEMS_LIMIT);
         return $this->spotifyApi->search($query, $type, $offset)->getData();
     }
 
@@ -57,7 +56,6 @@ class SearchModel extends BaseModel
     public function createResponse(SpotifySearchResponseContainer $response)
     {
         $data = $response->getData();
-
         return $this->parseAndMapToArray($data);
     }
 

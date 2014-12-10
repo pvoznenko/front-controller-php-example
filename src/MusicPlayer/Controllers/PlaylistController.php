@@ -25,11 +25,11 @@ class PlaylistController extends MusicPlayerAuthController
      */
     public function getPlaylist($playlistId = null)
     {
-        $page = $this->getPageNumber();
+        $offset = $this->getOffsetNumber();
         $playlistModel = new PlaylistModel;
         $currentUserId = $this->user->getId();
 
-        $playlist = $playlistModel->getPlaylist($currentUserId, $playlistId, $page);
+        $playlist = $playlistModel->getPlaylist($currentUserId, $playlistId, $offset);
 
         $responseData = ['playlist' => $playlist];
 
@@ -41,7 +41,7 @@ class PlaylistController extends MusicPlayerAuthController
         } else {
             // if $playlistId not specified then we need to return list of available playlist for user
             $numberOfResults = $playlistModel->getPlaylistCount($currentUserId);
-            $responseData['info'] = $this->getPaginationBlock($page, $numberOfResults);
+            $responseData['info'] = $this->getPaginationBlock($offset, $numberOfResults);
         }
 
         $this->response->addHeader('200 OK')->send($responseData);
@@ -175,11 +175,9 @@ class PlaylistController extends MusicPlayerAuthController
             throw new NotFoundException('Playlist not found!');
         }
 
-        $page = $this->getPageNumber();
-
+        $offset = $this->getOffsetNumber();
         $songsModel = new SongsModel;
-
-        $data = $songsModel->getSongsFromPlaylist($playlistId, $currentUserId, $songId, $page);
+        $data = $songsModel->getSongsFromPlaylist($playlistId, $currentUserId, $songId, $offset);
 
         $responseKey = $songId !== null ? 'song' : 'songs';
         $responseData = [$responseKey => $data];
@@ -192,7 +190,7 @@ class PlaylistController extends MusicPlayerAuthController
         } else {
             // if $songId not specified then we need to return list of available songs in playlist for user
             $numberOfResults = $songsModel->getSongsCount($playlistId, $currentUserId);
-            $responseData['info'] = $this->getPaginationBlock($page, $numberOfResults);
+            $responseData['info'] = $this->getPaginationBlock($offset, $numberOfResults);
         }
 
         $this->response->addHeader('200 OK')->send($responseData);

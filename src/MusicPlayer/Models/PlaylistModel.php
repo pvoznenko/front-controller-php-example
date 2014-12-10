@@ -29,14 +29,14 @@ class PlaylistModel extends BaseModel
      *
      * @param int $userId - user id
      * @param int|null $playlistId - playlist id, default null
-     * @param int $page - current page of pagination data, default 1
+     * @param int $offset - current offset for data pagination, default 0
      *
      * @return array - if successful will return playlist, otherwise empty list
      */
-    public function getPlaylist($userId, $playlistId = null, $page = 1)
+    public function getPlaylist($userId, $playlistId = null, $offset = 0)
     {
-        $cacheKey = sprintf('playlist:%d:getPlaylist:%d:%d', $userId, $playlistId, $page);
-        $callback = function($this) use($userId, $playlistId, $page) { return $this->entity->getPlaylist($userId, $playlistId, $page); };
+        $cacheKey = sprintf('playlist:%d:getPlaylist:%d:%d', $userId, $playlistId, $offset);
+        $callback = function($this) use($userId, $playlistId, $offset) { return $this->entity->getPlaylist($userId, $playlistId, $offset); };
 
         return $this->getData($cacheKey, $callback);
     }

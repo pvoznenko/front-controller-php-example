@@ -39,25 +39,12 @@ class BaseEntity
     /**
      * Method returns string like: LIMIT ?, ?
      *
-     * @param int $page - page number, default 1
+     * @param int $offset - data offset, default 0
      * @return string
      */
-    protected function getLimitString($page = 1)
+    protected function getLimitString($offset = 0)
     {
-        return ' LIMIT ' . self::calculateOffset($page) . ', ' . self::DEFAULT_ROWS_LIMIT;
-    }
-
-    /**
-     * Method returns correct offset of data for DB limit
-     *
-     * @param int $page - page number
-     * @param int $limit - default BaseEntity::DEFAULT_ROWS_LIMIT
-     *
-     * @return int
-     */
-    public static function calculateOffset($page = 1, $limit = self::DEFAULT_ROWS_LIMIT)
-    {
-        return ($page - 1) * $limit;
+        return sprintf(' LIMIT %d, %d', $offset, self::DEFAULT_ROWS_LIMIT);
     }
 
     /**
@@ -176,19 +163,19 @@ class BaseEntity
      * @param array $what - array of keys what to select parameters, what to return
      * @param Param[] $where - object with parameters, where
      * @param int $fetchMode - PDO fetch mode, default \PDO::FETCH_ASSOC
-     * @param int|null $page - number of page for pagination. If set, will make query with LIMIT. by default null
+     * @param int|null $offset - data offset for pagination. If set, will make query with LIMIT. by default null
      *
      * @return mixed|bool - if successful will data specified by $fetchMode, otherwise false
      */
-    public function selectData(array $what, array $where, $fetchMode = \PDO::FETCH_ASSOC, $page = null)
+    public function selectData(array $what, array $where, $fetchMode = \PDO::FETCH_ASSOC, $offset = null)
     {
         $data = $where;
         $where = $this->prepareWhereData($where);
 
         $query = 'SELECT ' . implode(', ', $what) . ' FROM `' . $this->tableName . '` WHERE ' . $where;
 
-        if ($page !== null) {
-            $query .= $this->getLimitString($page);
+        if ($offset !== null) {
+            $query .= $this->getLimitString($offset);
         }
 
         $statement = $this->db->prepare($query);
