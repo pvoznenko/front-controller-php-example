@@ -13,6 +13,7 @@ echo sprintf('%s - Web server started on %s:%d with PID %d', date('r'), WEB_SERV
 // Kill the web server when the process ends
 register_shutdown_function(function() use ($pid) {
     cleanUpDb();
+    cleanRedis();
 
     echo sprintf('%s - Killing process with ID %d', date('r'), $pid), PHP_EOL;
     exec('kill ' . $pid);
@@ -23,6 +24,22 @@ define('ROOT', dirname(__DIR__));
 // More bootstrap code
 require_once ROOT . '/vendor/autoload.php';
 require_once ROOT . '/config/config.php';
+
+$redisClient = new \Predis\Client([
+    'host' => REDIS_HOST,
+    'port' => REDIS_PORT,
+]);
+
+App\Services\Cache::initializeService(App\ServiceContainer::getInstance(), $redisClient);
+
+/**
+ * Will remove existing Redis cache
+ */
+function cleanRedis()
+{
+    App\ServiceContainer::getInstance()->get('Cache')->del('*');
+    echo 'Redis cache cleared!', PHP_EOL;
+}
 
 /**
  * Will remove existing DB for test purpose
@@ -38,3 +55,4 @@ function cleanUpDb()
 }
 
 cleanUpDb();
+cleanRedis();

@@ -2,6 +2,7 @@
 namespace Tests\MusicPlayer;
 
 use Tests\BaseWebTestClass;
+use \Guzzle\Http\Exception\BadResponseException;
 
 /**
  * Class UsersBehaviourTest
@@ -19,10 +20,15 @@ class UsersBehaviourTest extends BaseWebTestClass
      */
     public function testUserAuthentication()
     {
-        $request = $this->client->post(BASE_API_URL . '/users/authentication', ['Accept' => 'application/json']);
-        $response = $request->send();
-        $decodedResponse = $response->json();
-        $this->assertEquals($response->getStatusCode(), 201, 'Status of response should be 201!');
-        $this->assertTrue(isset($decodedResponse['token']), 'Token should be presented in response!');
+        try {
+            $request = $this->client->post(BASE_API_URL . '/users/authentication', ['Accept' => 'application/json']);
+            $response = $request->send();
+            $decodedResponse = $response->json();
+            $this->assertEquals($response->getStatusCode(), 201, 'Status of response should be 201!');
+            $this->assertTrue(isset($decodedResponse['token']), 'Token should be presented in response!');
+        } catch (BadResponseException $exception) {
+            $this->assertTrue(false, sprintf('Error during authentication: %s :: Code: %s :: Response: %s',
+                $exception->getMessage(), $exception->getCode(), $exception->getResponse()->getMessage()));
+        }
     }
 }

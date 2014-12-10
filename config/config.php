@@ -44,3 +44,8 @@ define('REDIS_HOST', '127.0.0.1');
  * Redis port
  */
 define('REDIS_PORT', 6379);
+
+/**
+ * If false cache mechanic will be off
+ */
+define('CACHING', true);

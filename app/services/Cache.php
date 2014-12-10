@@ -10,8 +10,10 @@ class Cache implements ServiceInterface, CacheInterface
 {
     /**
      * Prefix that Redis use to store data
+     *
+     * @var string
      */
-    const REDIS_PREFIX = 'MP:';
+    private $redisPrefix = 'MP:';
 
     /**
      * Redis client
@@ -57,13 +59,17 @@ class Cache implements ServiceInterface, CacheInterface
      */
     public function set($key, $value, $expiresIn = null)
     {
+        if (!CACHING) {
+            return $this;
+        }
+
         $expireResolution = $expiresIn;
 
         if ($expiresIn != null) {
             $expireResolution += time();
         }
 
-        $this->client->set(self::REDIS_PREFIX . $key, $value, $expireResolution);
+        $this->client->set($this->redisPrefix . $key, $value, $expireResolution);
         return $this;
     }
 
@@ -76,7 +82,11 @@ class Cache implements ServiceInterface, CacheInterface
      */
     public function get($key)
     {
-        return $this->client->get(self::REDIS_PREFIX . $key);
+        if (!CACHING) {
+            return '';
+        }
+
+        return $this->client->get($this->redisPrefix . $key);
     }
 
     /**
@@ -88,7 +98,11 @@ class Cache implements ServiceInterface, CacheInterface
      */
     public function del($key)
     {
-        return $this->client->del(self::REDIS_PREFIX . $key);
+        if (!CACHING) {
+            return 0;
+        }
+
+        return $this->client->del($this->redisPrefix . $key);
     }
 
     /**
@@ -100,6 +114,22 @@ class Cache implements ServiceInterface, CacheInterface
      */
     public function exists($key)
     {
-        return (bool)$this->client->exists(self::REDIS_PREFIX . $key);
+        if (!CACHING) {
+            return false;
+        }
+
+        return (bool)$this->client->exists($this->redisPrefix . $key);
+    }
+
+    /**
+     * Set prefix for the cache
+     *
+     * @param string $prefix
+     * @return $this
+     */
+    public function setPrefix($prefix)
+    {
+        $this->redisPrefix = $prefix;
+        return $this;
     }
 }

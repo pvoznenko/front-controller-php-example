@@ -45,4 +45,12 @@ interface CacheInterface
      * @return bool
      */
     public function exists($key);
+
+    /**
+     * Set prefix for the cache
+     *
+     * @param string $prefix
+     * @return $this
+     */
+    public function setPrefix($prefix);
 } 
