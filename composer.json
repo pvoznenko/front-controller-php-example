@@ -10,10 +10,15 @@
         }
     ],
     "autoload": {
+        "psr-0": {
+            "App\\": "",
+            "MusicPlayer\\": "src/",
+            "Tests\\": "tests/"
+        },
         "psr-4": {
             "App\\": "App/",
             "MusicPlayer\\": "src/MusicPlayer/",
-            "Tests\\": "tests/"
+            "Tests\\": "tests/Tests/"
         }
     },
     "require": {

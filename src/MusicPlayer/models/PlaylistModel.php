@@ -2,7 +2,9 @@
 namespace MusicPlayer\Models;
 
 use App\DataLayer\BaseModel;
+use App\ServiceContainer;
 use MusicPlayer\Entities\PlaylistEntity;
+use App\Interfaces\CacheInterface;
 
 /**
  * Class PlaylistModel
@@ -17,9 +19,15 @@ class PlaylistModel extends BaseModel
      */
     protected $entity;
 
+    /**
+     * @var CacheInterface
+     */
+    protected $cache;
+
     public function __construct()
     {
         $this->entity = new PlaylistEntity;
+        $this->cache = ServiceContainer::getInstance()->get('Cache');
     }
 
     /**
@@ -34,6 +42,8 @@ class PlaylistModel extends BaseModel
      */
     public function getPlaylist($userId, $playlistId = null, $page = 1)
     {
+
+
         return $this->entity->getPlaylist($userId, $playlistId, $page);
     }
 

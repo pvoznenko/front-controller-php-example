@@ -1,5 +1,5 @@
 <?php
-namespace tests;
+namespace Tests;
 
 use Guzzle\Http\Client;
 

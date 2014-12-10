@@ -30,7 +30,7 @@ $redisClient = new \Predis\Client([
     'port' => REDIS_PORT,
 ]);
 
-App\Services\Cache::initializeService(App\ServiceContainer::getInstance(), $redisClient);
+App\Services\Cache::initializeService(\App\ServiceContainer::getInstance(), $redisClient);
 
 /**
  * Will remove existing Redis cache
