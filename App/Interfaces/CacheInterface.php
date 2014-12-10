@@ -53,4 +53,16 @@ interface CacheInterface
      * @return $this
      */
     public function setPrefix($prefix);
+
+    /**
+     * Method clear all cache for current prefix
+     */
+    public function clearAll();
+
+    /**
+     * Method clear cache for current prefix by pattern
+     *
+     * @param string $pattern
+     */
+    public function clear($pattern);
 } 

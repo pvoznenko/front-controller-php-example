@@ -20,6 +20,7 @@ class SongsModel extends BaseModel
     public function __construct()
     {
         $this->entity = new SongsEntity;
+        parent::__construct();
     }
 
     /**
@@ -35,7 +36,10 @@ class SongsModel extends BaseModel
      */
     public function getSongsFromPlaylist($playlistId, $userId, $songId = null, $page = 1)
     {
-        return $this->entity->getSongsFromPlaylist($playlistId, $userId, $songId, $page);
+        $cacheKey = sprintf('songs:%d:%d:getSongsFromPlaylist:%d:%d', $userId, $playlistId, $songId, $page);
+        $callback = function($this) use($playlistId, $userId, $songId, $page) { return $this->entity->getSongsFromPlaylist($playlistId, $userId, $songId, $page); };
+
+        return $this->getData($cacheKey, $callback);
     }
 
     /**
@@ -47,7 +51,10 @@ class SongsModel extends BaseModel
      */
     public function getSongsCount($playlistId, $userId)
     {
-        return $this->entity->getSongsCount($playlistId, $userId);
+        $cacheKey = sprintf('songs:%d:%d:getSongsCount', $userId, $playlistId);
+        $callback = function($this) use($playlistId, $userId) { return $this->entity->getSongsCount($playlistId, $userId); };
+
+        return $this->getData($cacheKey, $callback);
     }
 
     /**
@@ -63,7 +70,10 @@ class SongsModel extends BaseModel
      */
     public function isSongInPlaylist($track, $artist, $album, $playlistId, $userId)
     {
-        return $this->entity->isSongInPlaylist($track, $artist, $album, $playlistId, $userId);
+        $cacheKey = sprintf('songs:%d:%d:isSongInPlaylist:%s', $userId, $playlistId, base64_encode($track . $artist . $album));
+        $callback = function($this) use($track, $artist, $album, $playlistId, $userId) { return $this->entity->isSongInPlaylist($track, $artist, $album, $playlistId, $userId); };
+
+        return $this->getData($cacheKey, $callback);
     }
 
     /**
@@ -79,7 +89,10 @@ class SongsModel extends BaseModel
      */
     public function addSongToPlaylist($track, $artist, $album, $playlistId, $userId)
     {
-        return $this->entity->addSongToPlaylist($track, $artist, $album, $playlistId, $userId);
+        $cacheKeyPattern = sprintf('songs:%d:%d:*', $userId, $playlistId);
+        $callback = function($this) use($track, $artist, $album, $playlistId, $userId) { return $this->entity->addSongToPlaylist($track, $artist, $album, $playlistId, $userId); };
+
+        return $this->clearCache($cacheKeyPattern, $callback);
     }
 
     /**
@@ -93,6 +106,9 @@ class SongsModel extends BaseModel
      */
     public function deleteSongFromPlaylist($songId, $playlistId, $userId)
     {
-        return $this->entity->deleteSongFromPlaylist($songId, $playlistId, $userId);
+        $cacheKeyPattern = sprintf('songs:%d:%d:*', $userId, $playlistId);
+        $callback = function($this) use($songId, $playlistId, $userId) { return $this->entity->deleteSongFromPlaylist($songId, $playlistId, $userId); };
+
+        return $this->clearCache($cacheKeyPattern, $callback);
     }
 } 

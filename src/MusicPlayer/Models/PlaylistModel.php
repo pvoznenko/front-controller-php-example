@@ -2,9 +2,7 @@
 namespace MusicPlayer\Models;
 
 use App\DataLayer\BaseModel;
-use App\ServiceContainer;
 use MusicPlayer\Entities\PlaylistEntity;
-use App\Interfaces\CacheInterface;
 
 /**
  * Class PlaylistModel
@@ -19,15 +17,10 @@ class PlaylistModel extends BaseModel
      */
     protected $entity;
 
-    /**
-     * @var CacheInterface
-     */
-    protected $cache;
-
     public function __construct()
     {
         $this->entity = new PlaylistEntity;
-        $this->cache = ServiceContainer::getInstance()->get('Cache');
+        parent::__construct();
     }
 
     /**
@@ -42,9 +35,10 @@ class PlaylistModel extends BaseModel
      */
     public function getPlaylist($userId, $playlistId = null, $page = 1)
     {
+        $cacheKey = sprintf('playlist:%d:getPlaylist:%d:%d', $userId, $playlistId, $page);
+        $callback = function($this) use($userId, $playlistId, $page) { return $this->entity->getPlaylist($userId, $playlistId, $page); };
 
-
-        return $this->entity->getPlaylist($userId, $playlistId, $page);
+        return $this->getData($cacheKey, $callback);
     }
 
     /**
@@ -55,7 +49,10 @@ class PlaylistModel extends BaseModel
      */
     public function getPlaylistCount($userId)
     {
-        return $this->entity->getPlaylistCount($userId);
+        $cacheKey = sprintf('playlist:%d:getPlaylistCount', $userId);
+        $callback = function($this) use($userId) { return $this->entity->getPlaylistCount($userId); };
+
+        return $this->getData($cacheKey, $callback);
     }
 
     /**
@@ -68,7 +65,10 @@ class PlaylistModel extends BaseModel
      */
     public function getPlaylistByName($name, $userId)
     {
-        return $this->entity->getPlaylistByName($name, $userId);
+        $cacheKey = sprintf('playlist:%d:getPlaylistByName:%s', $userId, base64_encode($name));
+        $callback = function($this) use($name, $userId) { return $this->entity->getPlaylistByName($name, $userId); };
+
+        return $this->getData($cacheKey, $callback);
     }
 
     /**
@@ -81,7 +81,10 @@ class PlaylistModel extends BaseModel
      */
     public function addPlaylist($name, $userId)
     {
-        return $this->entity->addPlaylist($name, $userId);
+        $cacheKeyPattern = sprintf('playlist:%d:*', $userId);
+        $callback = function($this) use($name, $userId) { return $this->entity->addPlaylist($name, $userId); };
+
+        return $this->clearCache($cacheKeyPattern, $callback);
     }
 
     /**
@@ -95,7 +98,10 @@ class PlaylistModel extends BaseModel
      */
     public function updatePlaylist($playlistId, $userId, $newName)
     {
-        return $this->entity->updatePlaylist($playlistId, $userId, $newName);
+        $cacheKeyPattern = sprintf('playlist:%d:*', $userId);
+        $callback = function($this) use($playlistId, $userId, $newName) { return $this->entity->updatePlaylist($playlistId, $userId, $newName); };
+
+        return $this->clearCache($cacheKeyPattern, $callback);
     }
 
     /**
@@ -108,6 +114,9 @@ class PlaylistModel extends BaseModel
      */
     public function deletePlaylist($playlistId, $userId)
     {
-        return $this->entity->deletePlaylist($playlistId, $userId);
+        $cacheKeyPattern = sprintf('playlist:%d:*', $userId);
+        $callback = function($this) use($playlistId, $userId) { return $this->entity->deletePlaylist($playlistId, $userId); };
+
+        return $this->clearCache($cacheKeyPattern, $callback);
     }
 } 

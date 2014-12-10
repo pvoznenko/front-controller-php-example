@@ -63,13 +63,12 @@ class Cache implements ServiceInterface, CacheInterface
             return $this;
         }
 
-        $expireResolution = $expiresIn;
-
-        if ($expiresIn != null) {
-            $expireResolution += time();
+        if ($expiresIn !== null) {
+            $this->client->setex($this->redisPrefix . $key, $expiresIn, $value);
+        } else {
+            $this->client->set($this->redisPrefix . $key, $value);
         }
 
-        $this->client->set($this->redisPrefix . $key, $value, $expireResolution);
         return $this;
     }
 
@@ -131,5 +130,39 @@ class Cache implements ServiceInterface, CacheInterface
     {
         $this->redisPrefix = $prefix;
         return $this;
+    }
+
+    /**
+     * Method clear cache for current prefix by pattern
+     *
+     * @param string $pattern
+     */
+    public function clear($pattern)
+    {
+        if (!CACHING) {
+            return;
+        }
+
+        $data = $this->client->keys($this->redisPrefix . $pattern);
+
+        foreach($data as $key) {
+            $this->client->del($key);
+        }
+    }
+
+    /**
+     * Method clear all cache for current prefix
+     */
+    public function clearAll()
+    {
+        if (!CACHING) {
+            return;
+        }
+
+        $data = $this->client->keys($this->redisPrefix . '*');
+
+        foreach($data as $key) {
+            $this->client->del($key);
+        }
     }
 }

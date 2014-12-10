@@ -25,7 +25,7 @@ I believe I can call it simple API CRUD micro framework for creating small servi
 
 Music player application divided on two part:
 * Frontend application (in scope of task not implemented);
-* Backend API application with my custom micro service written on PHP.
+* Backend API server with my custom micro service written on PHP.
 
 In this way we can talk about handling serious load, by providing multiple frontend and backend servers with load balance
 (HTTP cache servers and another middleware) in between.
@@ -57,9 +57,9 @@ interface) and initialized on demand (lazy loading). List of existing Services:
 * SpotifyAPI - service that responsible for authentication with Spotify API server and provides interface for search
 functionality (also wraps search results in data object containers (containers)).
 
-## Application Life Cycle
+## API Server Life Cycle
 
-Application life cycle represents by following sequence:
+API Server life cycle represents by following sequence:
 
 ```
 Request -> Route -> Dispatch -> Controller -> Model -> Entity -> Services (Storage, etc)
@@ -69,38 +69,39 @@ When Controller gets all needed data from the Model it generates Response to the
 
 ## System Requirements
 
-To run current web server you should have [Redis](http://redis.io/) installed and at least `PHP v5.4` with `SQLite`,
+To run current API server you should have [Redis](http://redis.io/) installed and at least `PHP v5.4` with `SQLite`,
 `cURL` and `mcrypt` (by default `mcrypt` in Mac OS X is not installed).
 
-## Application Configuration
+## API Server Configuration
 
-You can configure application through configuration file at: `config\config.php`
+You can configure API server through configuration file at: `config\config.php`
 
 ## Setup
 
-Before running application you need to install dependencies with [Composer](https://getcomposer.org/) by using following
+Before running API server you need to install dependencies with [Composer](https://getcomposer.org/) by using following
 command:
 
 ```
 $ composer install
 ```
 
-It will download all dependencies that needs for tests and create autoload file that application uses as PSR-4 Autoloader.
+It will download all dependencies that needs for tests and create autoload file that API server uses as PSR-4 Autoloader.
 
-Since in scope of the test task it was not recommended to use external libraries, so for application I used only Redis
-client library, all another dependencies only for testing (to test web server).
+Since in scope of the test task it was not recommended to use external libraries, so for API server I used only Redis
+client library, all another dependencies only for testing (to test API server).
 
-## Run Web Server
+## Run API Server
 
-In examples I will assume that web server runs on `http://localhost:7070/`.
+In examples I will assume that API server runs on `http://localhost:7070/`. The server enter point (`index.php`) is located
+in folder `server`.
 
 ### nginx
 
-In nginx config important that `public` folder of current project specified as `root` and `location` set on `index.php`,
+In nginx config important that `server` folder of current project specified as `root` and `location` set on `index.php`,
 something like this:
 
 ```
-root /var/www/public;
+root /var/www/server;
 
 location / {
     try_files $uri $uri/ /index.php;
@@ -114,7 +115,7 @@ You can use standard php web server for development / test purposes.
 To start web server run following command:
 
 ```
-$ php -S localhost:7070 -t /var/www/public
+$ php -S localhost:7070 -t /var/www/server
 ```
 
 Your server should be accessible from `http://localhost:7070/`.
@@ -128,16 +129,17 @@ command:
 $ ./vendor/bin/phpunit
 ```
 
-It will start server and run API tests.
+It will start server on `http://localhost:7072` (you can configure `host` and `port` in phpunit.xml.dist file, to
+successfully run tests, port should be available) and run API tests.
 
 For tests I used [PHPUnit](https://phpunit.de/) (for tests) and [Guzzle](http://guzzle.readthedocs.org/en/latest/) HTTP
 client (for testing API). Probably next time I will try [Codeception](http://codeception.com/) for such needs.
 
-## Application API
+## Server API
 
-Application contain public API and private that requires authentication first.
+Server API contain public API and private that requires authentication first.
 
-You can use [cURL](http://curl.haxx.se/) to test application.
+You can use [cURL](http://curl.haxx.se/) to test API server.
 
 API response in JSON format.
 
@@ -295,7 +297,7 @@ $ curl -i -H Accept:application/json -X DELETE -G http://localhost:7070/api/v1/p
 
 #### Search
 
-You can perform search in Spotify library. You can search by artist, album or track. Current application provide API to
+You can perform search in Spotify library. You can search by artist, album or track. Current API server provide API to
 do search using Spotify's search patterns (field filters). More information about search field filters possibility you
 can read at official [Spotify Documentation](https://developer.spotify.com/web-api/search-item/).
 

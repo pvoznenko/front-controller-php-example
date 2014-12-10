@@ -1,6 +1,7 @@
 <?php
 namespace App\Services;
 
+use App\Containers\CacheDataContainer;
 use App\Interfaces\ServiceInterface;
 use App\Interfaces\CurlInterface;
 use App\Interfaces\CacheInterface;
@@ -47,6 +48,11 @@ class SpotifyAPI implements ServiceInterface, SpotifyAPIInterface
      * Limit of items from the search
      */
     const SPOTIFY_DEFAULT_ITEMS_LIMIT = 20;
+
+    /**
+     * Key, where service store Spotify auth token
+     */
+    const SPOTIFY_AUTH_CACHE_KEY = 'spotify:auth';
 
     /**
      * @var CurlInterface
@@ -104,9 +110,43 @@ class SpotifyAPI implements ServiceInterface, SpotifyAPIInterface
      */
     public function authorize()
     {
-        $this->doAuthorizationIfNeeded();
+        $authObject = $this->getFromCache(self::SPOTIFY_AUTH_CACHE_KEY);
+
+        if (!($authObject instanceof SpotifyAuthContainer)) {
+            $this->doAuthorizationIfNeeded();
+            $this->setToCache(self::SPOTIFY_AUTH_CACHE_KEY, $this->authTokenObject, $this->authTokenObject->getExpiresIn());
+        } else {
+            $this->authTokenObject = $authObject;
+        }
 
         return $this->authTokenObject;
+    }
+
+    /**
+     * Get data from cache
+     *
+     * @param string $key - cache key
+     * @return SpotifyAuthContainer
+     */
+    private function getFromCache($key)
+    {
+        $data = $this->cache->get($key);
+        return (new CacheDataContainer($data))->getDataFromSerialize();
+    }
+
+    /**
+     * Set data to cache
+     *
+     * @param string $key - cache key
+     * @param SpotifyAuthContainer $data - data to store
+     * @param int|null $expiresIn - in how many seconds value should be expired, default null
+     *
+     * @return CacheInterface
+     */
+    private function setToCache($key, SpotifyAuthContainer $data, $expiresIn = null)
+    {
+        $object = (new CacheDataContainer($data))->serialize();
+        return $this->cache->set($key, $object->__toString(), $expiresIn);
     }
 
     /**
@@ -193,7 +233,9 @@ class SpotifyAPI implements ServiceInterface, SpotifyAPIInterface
             $this->validateSearchType($type);
         }
 
-        $authHeader = $this->doAuthorizationIfNeeded()->getAuthHeader();
+        $this->authorize();
+
+        $authHeader = $this->getAuthHeader();
 
         $params = http_build_query(['q' => $query, 'type' => $type, 'offset' => (int)$offset]);
         $searchUrl = self::SPOTIFY_SEARCH_URL . '?' . $params;

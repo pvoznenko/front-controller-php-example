@@ -37,7 +37,7 @@ App\Services\Cache::initializeService(\App\ServiceContainer::getInstance(), $red
  */
 function cleanRedis()
 {
-    App\ServiceContainer::getInstance()->get('Cache')->del('*');
+    App\ServiceContainer::getInstance()->get('Cache')->clearAll();
     echo 'Redis cache cleared!', PHP_EOL;
 }
 

@@ -108,7 +108,7 @@ abstract class MusicPlayerAuthController extends BaseController
 
         foreach ($keys as $key) {
             if (!isset($requestData[$method][$key])) {
-                throw new BadRequestException('Variable "' . $key . '"must be specified!');
+                throw new BadRequestException('Variable "' . $key . '" must be specified!');
             }
         }
     }

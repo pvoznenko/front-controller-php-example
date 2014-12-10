@@ -50,6 +50,9 @@ class FrontController
             $route = $this->router->route($request);
             $this->dispatcher->dispatch($route, $request, $response);
         } catch (\Exception $error) {
+            $message = $error->getMessage();
+            $errorLog = $message;
+
             switch (true) {
                 case $error instanceof \InvalidArgumentException:
                 case $error instanceof BadRequestException:
@@ -66,11 +69,10 @@ class FrontController
                     break;
                 default:
                     $header = '500 Internal Server Error';
+                    $errorLog = var_export(['Exception' => $message, 'trace' => $error->getTraceAsString()], true);
             }
 
-            $message = $error->getMessage();
-
-            error_log($message);
+            error_log($errorLog);
             $response->addHeader($header)->send(['error' => $message]);
         }
     }

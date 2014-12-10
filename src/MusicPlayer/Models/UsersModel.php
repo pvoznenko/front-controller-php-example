@@ -20,6 +20,7 @@ class UsersModel extends BaseModel
     public function __construct()
     {
         $this->entity = new UsersEntity;
+        parent::__construct();
     }
 
     /**
@@ -31,6 +32,8 @@ class UsersModel extends BaseModel
      */
     public function addUser($token)
     {
+        $cacheKey = sprintf('users:%s:getUserIdByToken', $token);
+        $this->cache->del($cacheKey);
         return $this->entity->addUser($token);
     }
 
@@ -42,6 +45,9 @@ class UsersModel extends BaseModel
      */
     public function getUserIdByToken($token)
     {
-        return $this->entity->getUserIdByToken($token);
+        $cacheKey = sprintf('users:%s:getUserIdByToken', $token);
+        $callback = function($this) use($token) { return $this->entity->getUserIdByToken($token); };
+
+        return $this->getData($cacheKey, $callback);
     }
 } 

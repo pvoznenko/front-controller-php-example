@@ -25,7 +25,7 @@
 
     <php>
         <const name="WEB_SERVER_HOST" value="localhost" />
-        <const name="WEB_SERVER_PORT" value="1349" />
-        <const name="WEB_SERVER_DOCROOT" value="./public" />
+        <const name="WEB_SERVER_PORT" value="7072" />
+        <const name="WEB_SERVER_DOCROOT" value="./server" />
     </php>
 </phpunit>
