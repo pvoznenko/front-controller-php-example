@@ -7,9 +7,25 @@
 Your feedback is really important for me. Please take Your time and write all comments where You think I should do differently,
 so I have chance to improve and do not do the same mistakes in the future. Thank You for Your time!
 
+## Feedback Regarding Code Test
+
+Thank You for such test, it was interesting. Now I wrote my own micro framework on Front Controller pattern :D Hopefully
+my code is understandable and readable enough, I did my best.
+
+I believe You should change recommendation for search API usage, since Spotify Metadata API is deprecated. Also please mentioned
+that for PHP part there should be simple frontend for manual testing of functionality.
+
+Everything else was great! Now I will wait for feedback from You! Hopefully we can work together.
+
+If there are some questions feel free to contact me:
+
+My Skype: p.voznenko
+Email: p.voznenko@gmail.com
+Twitter: pvoznenko
+
 ## My Workflow
 
-Current project stored in my GitHub private repository ([https://github.com/fosco-maestro/music-player](https://github.com/fosco-maestro/music-player)),
+Current project is stored in my GitHub private repository ([https://github.com/fosco-maestro/music-player](https://github.com/fosco-maestro/music-player)),
 if you would like to see commit history please approach me. Each commit was tested on PHP versions `5.4`, `5.5` and
 `5.6` by commercial version of Travis, so all build is private too.
 
@@ -69,8 +85,121 @@ When Controller gets all needed data from the Model it generates Response to the
 
 ## File Structure
 
-```
+Below you can find file structure of following project. From the tree folder `vendor` and `public/components` was excluded
+since they contain external libraries:
 
+```
+.
+├── App -- core library
+│   ├── BaseContainer.php -- representation of Data container
+│   ├── BaseController.php -- representation of Controller
+│   ├── Containers -- folder contain Data containers (not DI Containers!). Used for Data representation
+│   │   ├── CacheDataContainer.php
+│   │   ├── SpotifyAuthContainer.php
+│   │   ├── SpotifySearchAlbumContainer.php
+│   │   ├── SpotifySearchArtistContainer.php
+│   │   ├── SpotifySearchResponseContainer.php
+│   │   ├── SpotifySearchResultContainer.php
+│   │   ├── SpotifySearchTrackContainer.php
+│   │   └── UserDataContainer.php
+│   ├── DataLayer -- representation of Data layer
+│   │   ├── BaseEntity.php
+│   │   ├── BaseModel.php
+│   │   └── Param.php
+│   ├── Dispatcher.php -- Front Controller dispatcher
+│   ├── Exceptions -- Custom exceptions
+│   │   ├── BadRequestException.php
+│   │   ├── NotAcceptableException.php
+│   │   ├── NotFoundException.php
+│   │   └── UnauthorizedException.php
+│   ├── FrontController.php -- Front Controller
+│   ├── GetterSetter.php -- abstract class provides magic getters and setters to the child
+│   ├── Interfaces -- folder with interfaces
+│   │   ├── CacheContainerInterface.php
+│   │   ├── CacheInterface.php
+│   │   ├── ContainerInterface.php
+│   │   ├── CurlInterface.php
+│   │   ├── PDOInterface.php
+│   │   ├── RequestInterface.php
+│   │   ├── ResponseInterface.php
+│   │   ├── RouteInterface.php
+│   │   ├── ServiceInterface.php
+│   │   ├── SpotifyAPIInterface.php
+│   │   └── SpotifySearchEntityInterface.php
+│   ├── Request.php -- representation of request
+│   ├── Response.php -- representation of response
+│   ├── Route.php -- representation of route
+│   ├── Router.php -- Router that dispatch Routes
+│   ├── ServiceContainer.php -- Service Container
+│   ├── Services -- folder with services
+│   │   ├── Cache.php
+│   │   ├── Curl.php
+│   │   ├── DB.php
+│   │   └── SpotifyAPI.php
+│   └── Singleton.php -- abstract class for singleton
+├── README.md
+├── bower.json
+├── composer.json
+├── config
+│   ├── config.php -- API Server configuration
+│   ├── migration
+│   │   └── base.sql -- API Server DB dump
+│   └── routes.php -- API Server routes configuration
+├── phpunit.xml.dist
+├── phpunit.xml.travis.dist
+├── public -- The Frontend server
+│   ├── app
+│   │   ├── app.js
+│   │   ├── controllers
+│   │   │   ├── index.js
+│   │   │   ├── playlist.js
+│   │   │   └── search.js
+│   │   ├── init.js
+│   │   ├── route.js
+│   │   ├── services
+│   │   │   ├── playlist.js
+│   │   │   ├── search.js
+│   │   │   ├── user.js
+│   │   │   └── userAuth.js
+│   │   └── templates
+│   │       ├── playlist.html
+│   │       └── search.html
+│   ├── index.html
+│   └── style
+│       └── css
+│           └── style.css
+├── server
+│   └── index.php -- entry point to the API Server
+├── src -- folder with our API representation
+│   └── MusicPlayer
+│       ├── Controllers
+│       │   ├── PlaylistController.php -- controller responsible for playlist functionality
+│       │   ├── SearchController.php -- controller responsible for search functionality
+│       │   └── UsersController.php -- controller responsible for user functionality
+│       ├── Entities -- contain interfaces to communicate with data source (store data in storage)
+│       │   ├── PlaylistEntity.php
+│       │   ├── SongsEntity.php
+│       │   └── UsersEntity.php
+│       ├── Models -- model representation, use caching layer here
+│       │   ├── PlaylistModel.php
+│       │   ├── SearchModel.php
+│       │   ├── SongsModel.php
+│       │   └── UsersModel.php
+│       └── MusicPlayerAuthController.php -- controller for private API
+├── tests -- folder contain test
+│   ├── Tests
+│   │   ├── Base
+│   │   │   └── WebServerTest.php
+│   │   ├── BaseWebTestClass.php
+│   │   ├── MusicPlayer
+│   │   │   ├── PlaylistBehaviourTest.php
+│   │   │   ├── SearchBehaviourTest.php
+│   │   │   └── UsersBehaviourTest.php
+│   │   └── PreTest.php
+│   └── bootstrap.php
+└── tmp - folder for temporary files, should be writable
+
+26 directories, 82 files
 ```
 
 ## System Requirements
@@ -83,6 +212,8 @@ To run current API server you should have [Redis](http://redis.io/) installed an
 You can configure API server through configuration file at: `config\config.php`
 
 ## Setup API Server
+
+(Since in test task you asking to have all libraries out of the box (packed in archive), this step could be skipped)
 
 Before running API server you need to install dependencies with [Composer](https://getcomposer.org/) by using following
 command:
@@ -141,6 +272,8 @@ client (for testing API).
 At the file `public/app/app.js` you should see constant `ApiUrl` - please set it to yours correct API Server address.
 
 ## Setup The Frontend
+
+(Since in test task you asking to have all libraries out of the box (packed in archive), this step could be skipped)
 
 Before running Frontend you need to install dependencies with [Bower](http://bower.io/) by using following command:
 
