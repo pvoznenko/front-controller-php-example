@@ -91,7 +91,7 @@ class SpotifyAPI implements ServiceInterface, SpotifyAPIInterface
     public static function initializeService(ServiceContainer $container, $injection = null)
     {
         $className = __CLASS__;
-        $container->set(static::getServiceName(), function() use($className, $injection) { return new $className($injection); });
+        $container->set(static::getServiceName(), function() use($className, $container) { return new $className($container); });
     }
 
     protected function __construct(ServiceContainer $serviceContainer)

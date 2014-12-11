@@ -164,10 +164,11 @@ class BaseEntity
      * @param Param[] $where - object with parameters, where
      * @param int $fetchMode - PDO fetch mode, default \PDO::FETCH_ASSOC
      * @param int|null $offset - data offset for pagination. If set, will make query with LIMIT. by default null
+     * @param bool $oneRow - if true will return single row, otherwise array
      *
      * @return mixed|bool - if successful will data specified by $fetchMode, otherwise false
      */
-    public function selectData(array $what, array $where, $fetchMode = \PDO::FETCH_ASSOC, $offset = null)
+    public function selectData(array $what, array $where, $fetchMode = \PDO::FETCH_ASSOC, $offset = null, $oneRow = true)
     {
         $data = $where;
         $where = $this->prepareWhereData($where);
@@ -183,7 +184,11 @@ class BaseEntity
         $this->bindValues($statement, $data);
 
         if ($statement->execute()) {
-            return $statement->fetch($fetchMode);
+            if ($oneRow) {
+                return $statement->fetch($fetchMode);
+            } else {
+                return $statement->fetchAll($fetchMode);
+            }
         }
 
         return false;

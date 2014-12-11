@@ -1,0 +1,122 @@
+<div class="row">
+    <form class="form-inline" role="form">
+        <div class="form-group">
+            <label class="sr-only" for="search-field">Search track</label>
+            <input type="text" class="form-control" id="search-field" placeholder="Search track" ng-model="searchTerm" />
+        </div>
+        <div class="radio">
+            <label>
+                <input type="radio" checked="checked" ng-model="searchType" value="track" ng-change="init()"> Track
+            </label>
+            <label>
+                <input type="radio" ng-model="searchType" value="album" ng-change="init()"> Album
+            </label>
+            <label>
+                <input type="radio" ng-model="searchType" value="artist" ng-change="init()"> Artist
+            </label>
+        </div>
+        <button type="submit" class="btn btn-success" ng-click="doSearch()">Search</button>
+    </form>
+</div>
+
+<div class="row">
+    <div class="alert alert-success alert-dismissable" data-ng-show="success">
+        {{success}}
+        <button class="close" data-ng-click="success = false">x</button>
+    </div>
+
+    <div class="alert alert-danger alert-dismissable" data-ng-show="error">
+        {{error}}
+        <button class="close" data-ng-click="error = null">x</button>
+    </div>
+</div>
+
+<div class="row">
+    <dl class="dl-horizontal" data-ng-show="paging.limit > 0">
+        <dt>Total found:</dt>
+        <dd>{{paging.num_results}}</dd>
+        <dt>Limit:</dt>
+        <dd>{{paging.limit}}</dd>
+        <dt>Offset:</dt>
+        <dd>{{paging.offset}}</dd>
+    </dl>
+</div>
+
+<div class="row">
+    <h4 data-ng-show="results.length <= 0" class="text-center">No search results.</h4>
+</div>
+
+<div class="row">
+    <table class="table table-striped table-hover" data-ng-show="results.length > 0 && searchType == 'track'">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th class="text-center">Track</th>
+                <th class="text-center">Artist</th>
+                <th class="text-center">Album</th>
+                <th class="text-center">Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr data-ng-repeat="result in results">
+                <td>{{$index + paging.offset}}</td>
+                <td>{{result.name}}</td>
+                <td>
+                    <ul data-ng-repeat="artist in result.artists">
+                        <li>{{artist.name}}</li>
+                    </ul>
+                </td>
+                <td>{{result.album.name}}</td>
+                <td class="text-center">
+                    <form class="form-inline" role="form">
+                        <select class="form-control" id="playlist-select-{{$index}}" ng-model="sad" ng-options="playlist as playlist.name for playlist in availablePlaylist">
+                            <option value="">-- choose playlist --</option>
+                        </select>
+                        <button type="button" class="btn btn-primary" ng-click="addToPlaylist(result, $index)">Add</button>
+                    </form>
+                </td>
+            </tr>
+        </tbody>
+        <tfoot>
+            <tr>
+                <td></td>
+                <td></td>
+                <td>
+                    <a href="" ng-click="pagination(-1);">-{{limit}} <</a>&nbsp;{{offset}}&nbsp;<a href="" ng-click="pagination(1);">> +{{limit}}</a>
+                </td>
+                <td></td>
+                <td></td>
+            </tr>
+        </tfoot>
+    </table>
+
+    <table class="table table-striped table-hover" data-ng-show="results.length > 0 && searchType != 'track'">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th class="text-center">{{searchType | capitalize}}</th>
+                <th class="text-center">Action</th>
+            </tr>
+        </thead>
+        <tbody>
+        <tr data-ng-repeat="result in results">
+            <td>{{$index + paging.offset}}</td>
+            <td>{{result.name}}</td>
+            <td>
+                <button type="button" class="btn btn-primary float-right" ng-click="searchTrackBy(searchType, result.name)">Search all songs</button>
+            </td>
+        </tr>
+        </tbody>
+        <tfoot>
+        <tr>
+            <td></td>
+            <td></td>
+            <td>
+                <a href="" ng-click="pagination(-1);">-{{limit}} <</a>&nbsp;{{offset}}&nbsp;<a href="" ng-click="pagination(1);">> +{{limit}}</a>
+            </td>
+            <td></td>
+            <td></td>
+        </tr>
+        </tfoot>
+    </table>
+</div>

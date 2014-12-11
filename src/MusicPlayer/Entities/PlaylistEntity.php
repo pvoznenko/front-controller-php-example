@@ -27,7 +27,7 @@ class PlaylistEntity extends BaseEntity
      * @param int|null $playlistId - playlist id, default null
      * @param int $offset - current offset for data pagination, default 0
      *
-     * @return array - if successful will return playlist, otherwise empty list
+     * @return array|object - if successful will return playlist, otherwise empty list
      */
     public function getPlaylist($userId, $playlistId = null, $offset = 0)
     {
@@ -42,7 +42,7 @@ class PlaylistEntity extends BaseEntity
             $offset = null;
         }
 
-        $result = $this->selectData($selectData, $data, \PDO::FETCH_ASSOC, $offset);
+        $result = $this->selectData($selectData, $data, \PDO::FETCH_ASSOC, $offset, $playlistId !== null);
 
         return $result === false ? [] : $result;
     }

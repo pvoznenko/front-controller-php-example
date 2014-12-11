@@ -111,7 +111,11 @@ class PlaylistController extends MusicPlayerAuthController
      */
     public function deletePlaylist($playlistId)
     {
-        $deleted = (new PlaylistModel)->deletePlaylist($playlistId, $this->user->getId());
+        $currentUserId = $this->user->getId();
+
+        (new SongsModel)->deleteAllSongsFromPlaylist($playlistId, $currentUserId);
+
+        $deleted = (new PlaylistModel)->deletePlaylist($playlistId, $currentUserId);
 
         if (!$deleted) {
             // Duplication of response will rise `404`, I know it is Holly War about idempotent in HTTP and DELETE

@@ -58,10 +58,29 @@ class Request implements RequestInterface
         $this->method = $method;
 
         /**
-         * Since PUT not in PHP global variables we need to read stream by our self
+         * Since PHP not accepting json, so we need to parse it our self
          */
-        if ($method === 'PUT') {
-            parse_str(file_get_contents('php://input'), $rawData['PUT']);
+        if (isset($rawData['CONTENT_TYPE']) && strpos($rawData['CONTENT_TYPE'], 'application/json') !== false) {
+            if ($method === 'PUT') {
+                $rawData[$method] = [];
+            }
+
+            $rawData[$method] = array_merge($rawData[$method], (array)json_decode(trim(file_get_contents('php://input')), true));
+        } else if ($method === 'PUT') {
+            /**
+             * Since PUT not standard
+             */
+            parse_str(file_get_contents('php://input'), $rawData[$method]);
+        } else if ($method === 'GET' && empty($rawData[$method]) && strpos($rawData['REQUEST_URI'], '?') !== false) {
+            /**
+             * Sometimes GET data is missing
+             */
+            $data = parse_url($rawData['REQUEST_URI']);
+
+            if (isset($data['query'])) {
+                parse_str($data['query'], $array);
+                $rawData[$method] = $array;
+            }
         }
 
         $this->rawData = $rawData;

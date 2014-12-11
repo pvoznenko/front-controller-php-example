@@ -28,7 +28,7 @@ class SongsEntity extends BaseEntity
      * @param int|null $songId - song id, default null
      * @param int $offset - current offset for data pagination, default 0
      *
-     * @return array - song(s) data or if not exist empty array
+     * @return array|object - song(s) data or if not exist empty array
      */
     public function getSongsFromPlaylist($playlistId, $userId, $songId = null, $offset = 0)
     {
@@ -44,7 +44,7 @@ class SongsEntity extends BaseEntity
             $offset = null;
         }
 
-        $result = $this->selectData($selectData, $data, \PDO::FETCH_ASSOC, $offset);
+        $result = $this->selectData($selectData, $data, \PDO::FETCH_ASSOC, $offset, $songId !== null);
 
         return $result === false ? [] : $result;
     }
@@ -127,6 +127,24 @@ class SongsEntity extends BaseEntity
     {
         $data = [
             'id' => new Param($songId, SQLITE3_INTEGER),
+            'playlist_id' => new Param($playlistId, SQLITE3_INTEGER),
+            'user_id' => new Param($userId, SQLITE3_INTEGER)
+        ];
+
+        return $this->deleteData($data);
+    }
+
+    /**
+     * Method deletes all songs from playlist of specified user
+     *
+     * @param int $playlistId - playlist id
+     * @param int $userId - user id
+     *
+     * @return bool - true if successful
+     */
+    public function deleteAllSongsFromPlaylist($playlistId, $userId)
+    {
+        $data = [
             'playlist_id' => new Param($playlistId, SQLITE3_INTEGER),
             'user_id' => new Param($userId, SQLITE3_INTEGER)
         ];

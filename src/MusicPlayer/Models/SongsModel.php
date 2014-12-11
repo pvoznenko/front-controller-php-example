@@ -111,4 +111,20 @@ class SongsModel extends BaseModel
 
         return $this->clearCache($cacheKeyPattern, $callback);
     }
+
+    /**
+     * Method deletes all songs from playlist of specified user
+     *
+     * @param int $playlistId - playlist id
+     * @param int $userId - user id
+     *
+     * @return bool - true if successful
+     */
+    public function deleteAllSongsFromPlaylist($playlistId, $userId)
+    {
+        $cacheKeyPattern = sprintf('songs:%d:%d:*', $userId, $playlistId);
+        $callback = function($this) use($playlistId, $userId) { return $this->entity->deleteAllSongsFromPlaylist($playlistId, $userId); };
+
+        return $this->clearCache($cacheKeyPattern, $callback);
+    }
 } 

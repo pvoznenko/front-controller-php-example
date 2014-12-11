@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Playlist</title>
+        <link href="/style/css/style.css" rel="stylesheet" type="text/css" />
+        <link href="/components/bootstrap/dist/css/bootstrap.css" rel="stylesheet" type="text/css" />
+        <link href="/components/bootstrap/dist/css/bootstrap-theme.css" rel="stylesheet" type="text/css" />
+        <link href="/components/angular-loading-bar/build/loading-bar.css" rel="stylesheet" type="text/css" />
+    </head>
+
+    <body data-ng-controller="index">
+        <div id="site" class="container">
+            <div class="row">
+                <div class="alert alert-danger alert-dismissable" data-ng-show="authError">
+                    {{authError}}
+                    <button class="close" data-ng-click="authError = null">x</button>
+                </div>
+                <p class="text-right" data-ng-show="userToken">Your current user auth token: {{userToken}}</p>
+            </div>
+            <ul class="nav nav-tabs nav-justified">
+                <li data-ng-class="{active: currentSite === '/'}"><a href="#/">Playlist</a></li>
+                <li data-ng-class="{active: currentSite.indexOf('/search') === 0}"><a href="#/search">Search</a></li>
+            </ul>
+
+            <div id="content">
+                <ng-view></ng-view>
+            </div>
+        </div>
+
+        <script src="/components/jquery/dist/jquery.js" type="text/javascript"></script>
+        <script src="/components/angular/angular.js" type="text/javascript"></script>
+        <script src="/components/angular-route/angular-route.js" type="text/javascript"></script>
+        <script src="/components/angular-resource/angular-resource.js" type="text/javascript"></script>
+        <script src="/components/bootstrap/dist/js/bootstrap.js" type="text/javascript"></script>
+        <script src="/components/angular-loading-bar/build/loading-bar.js" type="text/javascript"></script>
+
+        <script src="/app/app.js" type="text/javascript"></script>
+        <script src="/app/route.js" type="text/javascript"></script>
+
+        <script src="/app/services/user.js" type="text/javascript"></script>
+        <script src="/app/services/userAuth.js" type="text/javascript"></script>
+        <script src="/app/services/playlist.js" type="text/javascript"></script>
+        <script src="/app/services/search.js" type="text/javascript"></script>
+
+        <script src="/app/controllers/index.js" type="text/javascript"></script>
+        <script src="/app/controllers/playlist.js" type="text/javascript"></script>
+        <script src="/app/controllers/search.js" type="text/javascript"></script>
+
+        <script src="/app/init.js" type="text/javascript"></script>
+    </body>
+</html>
