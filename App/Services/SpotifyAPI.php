@@ -91,7 +91,9 @@ class SpotifyAPI implements ServiceInterface, SpotifyAPIInterface
     public static function initializeService(ServiceContainer $container, $injection = null)
     {
         $className = __CLASS__;
-        $container->set(static::getServiceName(), function() use($className, $container) { return new $className($container); });
+        $container->set(static::getServiceName(), function () use ($className, $container) {
+            return new $className($container);
+        });
     }
 
     protected function __construct(ServiceContainer $serviceContainer)
@@ -113,7 +115,8 @@ class SpotifyAPI implements ServiceInterface, SpotifyAPIInterface
 
         if (!($authObject instanceof SpotifyAuthContainer)) {
             $this->doAuthorizationIfNeeded();
-            $this->setToCache(self::SPOTIFY_AUTH_CACHE_KEY, $this->authTokenObject, $this->authTokenObject->getExpiresIn());
+            $this->setToCache(self::SPOTIFY_AUTH_CACHE_KEY, $this->authTokenObject,
+                $this->authTokenObject->getExpiresIn());
         } else {
             $this->authTokenObject = $authObject;
         }
@@ -171,7 +174,7 @@ class SpotifyAPI implements ServiceInterface, SpotifyAPIInterface
         }
 
         $type = 'Basic';
-        $token =  base64_encode(SPOTIFY_CLIENT_ID . ':' . SPOTIFY_CLIENT_SECRETE);
+        $token = base64_encode(SPOTIFY_CLIENT_ID . ':' . SPOTIFY_CLIENT_SECRETE);
 
         $this->curl->clearHeaders()
             ->addHeader($this->getAuthorizationHeaderFormatted($type, $token))
@@ -198,7 +201,8 @@ class SpotifyAPI implements ServiceInterface, SpotifyAPIInterface
      */
     private function getAuthHeader()
     {
-        return $this->getAuthorizationHeaderFormatted($this->authTokenObject->getTokenType(), $this->authTokenObject->getAccessToken());
+        return $this->getAuthorizationHeaderFormatted($this->authTokenObject->getTokenType(),
+            $this->authTokenObject->getAccessToken());
     }
 
     /**
@@ -270,9 +274,14 @@ class SpotifyAPI implements ServiceInterface, SpotifyAPIInterface
      */
     private function validateSearchType($type)
     {
-        $allowedSearchTypes = [self::SPOTIFY_SEARCH_TYPE_ALBUM, self::SPOTIFY_SEARCH_TYPE_ARTIST, self::SPOTIFY_SEARCH_TYPE_TRACK];
+        $allowedSearchTypes = [
+            self::SPOTIFY_SEARCH_TYPE_ALBUM,
+            self::SPOTIFY_SEARCH_TYPE_ARTIST,
+            self::SPOTIFY_SEARCH_TYPE_TRACK
+        ];
         if (!in_array($type, $allowedSearchTypes)) {
-            throw new BadRequestException(sprintf('Specified type "%s" is not allowed! Allowed types: %s', $type, implode(', ', $allowedSearchTypes)));
+            throw new BadRequestException(sprintf('Specified type "%s" is not allowed! Allowed types: %s', $type,
+                implode(', ', $allowedSearchTypes)));
         }
     }
 }

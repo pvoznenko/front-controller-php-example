@@ -65,21 +65,26 @@ class Request implements RequestInterface
                 $rawData[$method] = [];
             }
 
-            $rawData[$method] = array_merge($rawData[$method], (array)json_decode(trim(file_get_contents('php://input')), true));
-        } else if ($method === 'PUT') {
-            /**
-             * Since PUT not standard
-             */
-            parse_str(file_get_contents('php://input'), $rawData[$method]);
-        } else if ($method === 'GET' && empty($rawData[$method]) && strpos($rawData['REQUEST_URI'], '?') !== false) {
-            /**
-             * Sometimes GET data is missing
-             */
-            $data = parse_url($rawData['REQUEST_URI']);
+            $rawData[$method] = array_merge($rawData[$method],
+                (array)json_decode(trim(file_get_contents('php://input')), true));
+        } else {
+            if ($method === 'PUT') {
+                /**
+                 * Since PUT not standard
+                 */
+                parse_str(file_get_contents('php://input'), $rawData[$method]);
+            } else {
+                if ($method === 'GET' && empty($rawData[$method]) && strpos($rawData['REQUEST_URI'], '?') !== false) {
+                    /**
+                     * Sometimes GET data is missing
+                     */
+                    $data = parse_url($rawData['REQUEST_URI']);
 
-            if (isset($data['query'])) {
-                parse_str($data['query'], $array);
-                $rawData[$method] = $array;
+                    if (isset($data['query'])) {
+                        parse_str($data['query'], $array);
+                        $rawData[$method] = $array;
+                    }
+                }
             }
         }
 
@@ -132,7 +137,8 @@ class Request implements RequestInterface
         }
 
         if (!isset($data[$this->method][$key])) {
-            throw new \InvalidArgumentException(sprintf('The request data key in method type "%s" and key "%s" is invalid.', $this->method, $key));
+            throw new \InvalidArgumentException(sprintf('The request data key in method type "%s" and key "%s" is invalid.',
+                $this->method, $key));
         }
 
         return $data[$this->method][$key];
@@ -151,7 +157,7 @@ class Request implements RequestInterface
             return $data;
         }
 
-        foreach($data[$method] as $key => $value) {
+        foreach ($data[$method] as $key => $value) {
             $data[$method][$key] = htmlspecialchars($value, ENT_QUOTES);
         }
 

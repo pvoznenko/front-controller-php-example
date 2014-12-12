@@ -69,7 +69,7 @@ class SearchModel extends BaseModel
     {
         $data = [];
 
-        foreach($items as $item) {
+        foreach ($items as $item) {
             $data[] = $item->toArray();
         }
 

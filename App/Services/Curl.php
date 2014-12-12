@@ -65,7 +65,9 @@ class Curl implements ServiceInterface, CurlInterface
     public static function initializeService(ServiceContainer $container, $injection = null)
     {
         $className = __CLASS__;
-        $container->set(static::getServiceName(), function() use($className) { return new $className; });
+        $container->set(static::getServiceName(), function () use ($className) {
+            return new $className;
+        });
     }
 
     protected function __construct()

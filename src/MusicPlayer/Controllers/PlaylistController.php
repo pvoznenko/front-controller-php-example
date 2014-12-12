@@ -149,14 +149,16 @@ class PlaylistController extends MusicPlayerAuthController
 
         $songId = $songsModel->addSongToPlaylist($track, $artist, $album, $playlistId, $currentUserId);
 
-        $responseData = ['song' => [
-            'id' => $songId,
-            'track' => $track,
-            'artist' => $artist,
-            'album' => $album,
-            'playlistId' => $playlistId,
-            'userId' => $currentUserId
-        ]];
+        $responseData = [
+            'song' => [
+                'id' => $songId,
+                'track' => $track,
+                'artist' => $artist,
+                'album' => $album,
+                'playlistId' => $playlistId,
+                'userId' => $currentUserId
+            ]
+        ];
 
         $this->response->addHeader('201 Created')->send($responseData);
     }

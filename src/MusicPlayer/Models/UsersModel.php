@@ -46,7 +46,9 @@ class UsersModel extends BaseModel
     public function getUserIdByToken($token)
     {
         $cacheKey = sprintf('users:%s:getUserIdByToken', $token);
-        $callback = function($this) use($token) { return $this->entity->getUserIdByToken($token); };
+        $callback = function ($this) use ($token) {
+            return $this->entity->getUserIdByToken($token);
+        };
 
         return $this->getData($cacheKey, $callback);
     }

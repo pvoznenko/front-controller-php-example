@@ -80,7 +80,7 @@ class SpotifySearchResponseContainer extends BaseContainer implements ContainerI
             $items = [];
 
             /** @var \stdClass $item */
-            foreach($this->items as $item) {
+            foreach ($this->items as $item) {
                 $class = new $className($item);
 
                 if ($class instanceof SpotifySearchTrackContainer) {

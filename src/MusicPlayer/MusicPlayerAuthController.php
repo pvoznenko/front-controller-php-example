@@ -67,7 +67,7 @@ abstract class MusicPlayerAuthController extends BaseController
     {
         try {
             $offset = (int)$this->request->get('offset', true);
-        } catch(\InvalidArgumentException $exception) {
+        } catch (\InvalidArgumentException $exception) {
             $offset = 0;
         }
 

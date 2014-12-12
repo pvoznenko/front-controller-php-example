@@ -18,7 +18,7 @@ class BaseWebTestClass extends \PHPUnit_Framework_TestCase
 
     public function setUp()
     {
-        $this->client = new Client('http://' . WEB_SERVER_HOST .':' . WEB_SERVER_PORT);
+        $this->client = new Client('http://' . WEB_SERVER_HOST . ':' . WEB_SERVER_PORT);
     }
 
     /**

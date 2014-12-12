@@ -25,7 +25,7 @@ abstract class BaseContainer extends GetterSetter
      */
     public function parse(\stdClass $object)
     {
-        foreach($this as $property => $value) {
+        foreach ($this as $property => $value) {
             $underscorePropertyName = strtolower(preg_replace('/([^A-Z])([A-Z])/', "$1_$2", $property));
 
             if (isset($object->$underscorePropertyName)) {

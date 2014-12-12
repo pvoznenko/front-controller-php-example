@@ -125,10 +125,12 @@ class Route implements RouteInterface
             $method = $class->getMethod($this->action);
 
             if (count($request->getParams()) < $method->getNumberOfRequiredParameters()) {
-                throw new BadRequestException(sprintf('%s::%s wrong amount of required parameters', $this->controllerClass, $this->action));
+                throw new BadRequestException(sprintf('%s::%s wrong amount of required parameters',
+                    $this->controllerClass, $this->action));
             }
         } catch (\ReflectionException $exception) {
-            throw new BadRequestException(sprintf('Controller class %s has no %s method', $this->controllerClass, $this->action));
+            throw new BadRequestException(sprintf('Controller class %s has no %s method', $this->controllerClass,
+                $this->action));
         }
     }
 }

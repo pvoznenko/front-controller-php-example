@@ -67,7 +67,7 @@ class SpotifySearchTrackContainer extends BaseContainer implements ContainerInte
             $artists = [];
 
             /** @var \stdClass $artist */
-            foreach($this->artists as $artist) {
+            foreach ($this->artists as $artist) {
                 $artists[] = new SpotifySearchArtistContainer($artist);
             }
 
@@ -87,7 +87,7 @@ class SpotifySearchTrackContainer extends BaseContainer implements ContainerInte
         $artists = $this->getArtists();
         $items = [];
 
-        foreach($artists as $artist) {
+        foreach ($artists as $artist) {
             $items[] = $artist->toArray();
         }
 

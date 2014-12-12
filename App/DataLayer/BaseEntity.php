@@ -58,7 +58,7 @@ class BaseEntity
         $keys = array_keys($data);
         $what = implode(',', $keys);
 
-        $keysPrepared = array_map(function($value) {
+        $keysPrepared = array_map(function ($value) {
             return ':' . $value;
         }, $keys);
 
@@ -75,7 +75,7 @@ class BaseEntity
      */
     private function bindValues(\PDOStatement $statement, array $data)
     {
-        foreach($data as $key => $values) {
+        foreach ($data as $key => $values) {
             $statement->bindValue(':' . $key, $values->getData(), $values->getType());
         }
     }
@@ -116,7 +116,7 @@ class BaseEntity
     {
         $keys = array_keys($data);
 
-        $keysPrepared = array_map(function($value) {
+        $keysPrepared = array_map(function ($value) {
             return $value . ' = :' . $value;
         }, $keys);
 
@@ -168,8 +168,13 @@ class BaseEntity
      *
      * @return mixed|bool - if successful will data specified by $fetchMode, otherwise false
      */
-    public function selectData(array $what, array $where, $fetchMode = \PDO::FETCH_ASSOC, $offset = null, $oneRow = true)
-    {
+    public function selectData(
+        array $what,
+        array $where,
+        $fetchMode = \PDO::FETCH_ASSOC,
+        $offset = null,
+        $oneRow = true
+    ) {
         $data = $where;
         $where = $this->prepareWhereData($where);
 

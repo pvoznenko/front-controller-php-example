@@ -24,7 +24,7 @@ abstract class GetterSetter
             if (!property_exists($this, $property)) {
                 throw new \Exception('Property ' . $property . ' not exists');
             }
-            switch($matches[1]) {
+            switch ($matches[1]) {
                 case 'set':
                     $this->checkArguments($args, 1, 1, $methodName);
                     return $this->set($property, $args[0]);

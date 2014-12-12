@@ -37,7 +37,9 @@ class DB implements ServiceInterface, PDOInterface
     public static function initializeService(ServiceContainer $container, $injection = null)
     {
         $className = __CLASS__;
-        $container->set(static::getServiceName(), function() use($className, $injection) { return new $className($injection); });
+        $container->set(static::getServiceName(), function () use ($className, $injection) {
+            return new $className($injection);
+        });
     }
 
     /**

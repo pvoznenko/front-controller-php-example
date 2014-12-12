@@ -41,7 +41,9 @@ class Cache implements ServiceInterface, CacheInterface
     public static function initializeService(ServiceContainer $container, $injection = null)
     {
         $className = __CLASS__;
-        $container->set(static::getServiceName(), function() use($className, $injection) { return new $className($injection); });
+        $container->set(static::getServiceName(), function () use ($className, $injection) {
+            return new $className($injection);
+        });
     }
 
     protected function __construct(Client $client)
@@ -145,7 +147,7 @@ class Cache implements ServiceInterface, CacheInterface
 
         $data = $this->client->keys($this->redisPrefix . $pattern);
 
-        foreach($data as $key) {
+        foreach ($data as $key) {
             $this->client->del($key);
         }
     }
@@ -161,7 +163,7 @@ class Cache implements ServiceInterface, CacheInterface
 
         $data = $this->client->keys($this->redisPrefix . '*');
 
-        foreach($data as $key) {
+        foreach ($data as $key) {
             $this->client->del($key);
         }
     }

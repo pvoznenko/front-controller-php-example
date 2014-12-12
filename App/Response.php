@@ -46,7 +46,8 @@ class Response implements ResponseInterface
      *
      * @return string
      */
-    public function getVersion() {
+    public function getVersion()
+    {
         return $this->version;
     }
 
@@ -98,7 +99,7 @@ class Response implements ResponseInterface
             return false;
         }
 
-        foreach($this->getHeaders() as $header) {
+        foreach ($this->getHeaders() as $header) {
             header($this->getVersion() . ' ' . $header, true);
         }
 
@@ -126,7 +127,7 @@ class Response implements ResponseInterface
 
         $acceptMimeType = $requestData['HTTP_ACCEPT'];
 
-        foreach($this->supportedMimeTypes as $mime) {
+        foreach ($this->supportedMimeTypes as $mime) {
             if (strstr($acceptMimeType, $mime) !== false) {
                 return true;
             }

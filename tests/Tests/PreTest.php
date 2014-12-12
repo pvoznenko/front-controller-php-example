@@ -29,6 +29,7 @@ class PreTest extends \PHPUnit_Framework_TestCase
      */
     public function testCurl()
     {
-        $this->assertTrue(function_exists('curl_version'), 'cURL is not enabled. Enable it or be sure to use the Stream request adapter instead');
+        $this->assertTrue(function_exists('curl_version'),
+            'cURL is not enabled. Enable it or be sure to use the Stream request adapter instead');
     }
 } 

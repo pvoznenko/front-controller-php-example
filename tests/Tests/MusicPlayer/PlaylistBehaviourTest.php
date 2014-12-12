@@ -33,7 +33,8 @@ class PlaylistBehaviourTest extends BaseWebTestClass
          * Accessing private API with wrong authentication token should ended up with an error
          */
         try {
-            $this->client->get(BASE_API_URL . '/playlist', ['Accept' => 'application/json', 'token' => 'qwerty'])->send();
+            $this->client->get(BASE_API_URL . '/playlist',
+                ['Accept' => 'application/json', 'token' => 'qwerty'])->send();
         } catch (BadResponseException $exception) {
             $this->assertEquals($exception->getResponse()->getStatusCode(), 401, 'Status of response should be 401!');
 
@@ -57,7 +58,7 @@ class PlaylistBehaviourTest extends BaseWebTestClass
      *
      * @depends testAuthSuccess
      *
-     * @covers \MusicPlayer\Controllers\PlaylistController::addPlaylist
+     * @covers  \MusicPlayer\Controllers\PlaylistController::addPlaylist
      */
     public function testAddingNewPlaylist()
     {
@@ -211,7 +212,7 @@ class PlaylistBehaviourTest extends BaseWebTestClass
      * @depends testAddingNewPlaylist
      * @depends testGetPlaylist
      *
-     * @covers \MusicPlayer\Controllers\PlaylistController::updatePlaylist
+     * @covers  \MusicPlayer\Controllers\PlaylistController::updatePlaylist
      */
     public function testUpdatePlaylist()
     {
@@ -248,7 +249,8 @@ class PlaylistBehaviourTest extends BaseWebTestClass
                 ->send()
                 ->json();
             $this->client
-                ->put(BASE_API_URL . '/playlist/' . $playlistId, ['Accept' => 'application/json', 'token' => $decodedResponse['token']]
+                ->put(BASE_API_URL . '/playlist/' . $playlistId,
+                    ['Accept' => 'application/json', 'token' => $decodedResponse['token']]
                     , ['newName' => '1'])
                 ->send();
         } catch (BadResponseException $exception) {
@@ -259,7 +261,8 @@ class PlaylistBehaviourTest extends BaseWebTestClass
          * Lets update new playlist
          */
         $newPlaylistName = 'Updated Test Playlist';
-        $request = $this->client->put(BASE_API_URL . '/playlist/' . $playlistId, $authHeaders, ['newName' => $newPlaylistName]);
+        $request = $this->client->put(BASE_API_URL . '/playlist/' . $playlistId, $authHeaders,
+            ['newName' => $newPlaylistName]);
         $response = $request->send();
         $this->assertEquals($response->getStatusCode(), 204, 'Status of response should be 204!');
 
@@ -270,7 +273,8 @@ class PlaylistBehaviourTest extends BaseWebTestClass
             ->get(BASE_API_URL . '/playlist/' . $playlistId, $authHeaders)
             ->send()
             ->json();
-        $this->assertTrue($decodedResponse['playlist']['name'] == $newPlaylistName, 'Expected new names should be equal!');
+        $this->assertTrue($decodedResponse['playlist']['name'] == $newPlaylistName,
+            'Expected new names should be equal!');
 
         /**
          * Lets create second playlist
@@ -288,7 +292,8 @@ class PlaylistBehaviourTest extends BaseWebTestClass
          */
         try {
             $newPlaylistName = 'Updated Test Playlist';
-            $this->client->put(BASE_API_URL . '/playlist/' . $playlistId, $authHeaders, ['newName' => $newPlaylistName])->send();
+            $this->client->put(BASE_API_URL . '/playlist/' . $playlistId, $authHeaders,
+                ['newName' => $newPlaylistName])->send();
         } catch (BadResponseException $exception) {
             $this->assertEquals($exception->getResponse()->getStatusCode(), 400, 'Status of response should be 400!');
         }
@@ -300,7 +305,7 @@ class PlaylistBehaviourTest extends BaseWebTestClass
      * @depends testAddingNewPlaylist
      * @depends testGetPlaylist
      *
-     * @covers \MusicPlayer\Controllers\PlaylistController::deletePlaylist
+     * @covers  \MusicPlayer\Controllers\PlaylistController::deletePlaylist
      */
     public function testPlaylistDeletion()
     {
@@ -326,7 +331,8 @@ class PlaylistBehaviourTest extends BaseWebTestClass
                 ->send()
                 ->json();
             $this->client
-                ->delete(BASE_API_URL . '/playlist/' . $playlistId, ['Accept' => 'application/json', 'token' => $decodedResponse['token']])
+                ->delete(BASE_API_URL . '/playlist/' . $playlistId,
+                    ['Accept' => 'application/json', 'token' => $decodedResponse['token']])
                 ->send();
         } catch (BadResponseException $exception) {
             $this->assertEquals($exception->getResponse()->getStatusCode(), 404, 'Status of response should be 404!');
@@ -376,7 +382,7 @@ class PlaylistBehaviourTest extends BaseWebTestClass
      *
      * @depends testAddingNewPlaylist
      *
-     * @covers \MusicPlayer\Controllers\PlaylistController::addSongToPlaylist
+     * @covers  \MusicPlayer\Controllers\PlaylistController::addSongToPlaylist
      */
     public function testAddingSongToPlaylist()
     {
@@ -433,7 +439,7 @@ class PlaylistBehaviourTest extends BaseWebTestClass
      * @depends testAddingNewPlaylist
      * @depends testAddingSongToPlaylist
      *
-     * @covers \MusicPlayer\Controllers\PlaylistController::addSongToPlaylist
+     * @covers  \MusicPlayer\Controllers\PlaylistController::addSongToPlaylist
      */
     public function testGetSongsFromPlaylist()
     {
@@ -459,7 +465,8 @@ class PlaylistBehaviourTest extends BaseWebTestClass
 
         $data = ['track' => $track, 'artist' => $artist, 'album' => $album];
 
-        $decodedResponse = $this->client->put(BASE_API_URL . '/playlist/' . $playlistId . '/songs', $authHeaders, $data)->send()->json();
+        $decodedResponse = $this->client->put(BASE_API_URL . '/playlist/' . $playlistId . '/songs', $authHeaders,
+            $data)->send()->json();
 
         $songId = $decodedResponse['song']['id'];
 
@@ -488,7 +495,7 @@ class PlaylistBehaviourTest extends BaseWebTestClass
          * Lets try to get not existing songs from playlist, should fail
          */
         try {
-            $this->client->get($playlistSongsUri .'/123312', $authHeaders)->send();
+            $this->client->get($playlistSongsUri . '/123312', $authHeaders)->send();
         } catch (BadResponseException $exception) {
             $this->assertEquals($exception->getResponse()->getStatusCode(), 404, 'Status of response should be 404!');
         }
@@ -572,7 +579,7 @@ class PlaylistBehaviourTest extends BaseWebTestClass
      * @depends testAddingSongToPlaylist
      * @depends testGetSongsFromPlaylist
      *
-     * @covers \MusicPlayer\Controllers\PlaylistController::deleteSongFromPlaylist
+     * @covers  \MusicPlayer\Controllers\PlaylistController::deleteSongFromPlaylist
      */
     public function testDeleteSongFromPlaylist()
     {
@@ -613,7 +620,8 @@ class PlaylistBehaviourTest extends BaseWebTestClass
                 ->send()
                 ->json();
             $this->client
-                ->delete(BASE_API_URL . '/playlist/' . $playlistId . '/songs/' . $songId, ['Accept' => 'application/json', 'token' => $decodedResponse['token']])
+                ->delete(BASE_API_URL . '/playlist/' . $playlistId . '/songs/' . $songId,
+                    ['Accept' => 'application/json', 'token' => $decodedResponse['token']])
                 ->send();
         } catch (BadResponseException $exception) {
             $this->assertEquals($exception->getResponse()->getStatusCode(), 404, 'Status of response should be 404!');
