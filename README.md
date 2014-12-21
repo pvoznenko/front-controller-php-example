@@ -1,6 +1,6 @@
 # Music-player
 
-[![Build Status](https://magnum.travis-ci.com/fosco-maestro/music-player.svg?token=GBn7ue6jJozTxZP71pzj&branch=master)](https://magnum.travis-ci.com/fosco-maestro/music-player)
+[![Build Status](https://travis-ci.org/fosco-maestro/music-player.svg)](https://travis-ci.org/fosco-maestro/music-player)
 
 Demo project that show how easy you could implement Front Controller pattern and create your own micro framework for 
 API.
@@ -198,8 +198,8 @@ API Server covers goal of this test task:
 
 1. Perform track/artist/album searches;
 2. Maintain playlist:
-⋅⋅* CRUD (Create, Remove, Update, Delete);
-⋅⋅* Add/remove tracks.
+  * CRUD (Create, Remove, Update, Delete);
+  * Add/remove tracks.
 
 API Server contain public API and private that requires authentication first.
 
