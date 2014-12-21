@@ -1,8 +1,8 @@
 # Music-player
 
-[![Build Status](https://travis-ci.org/fosco-maestro/music-player.svg)](https://travis-ci.org/fosco-maestro/music-player)
+[![Build Status](https://travis-ci.org/pvoznenko/music-player.svg?branch=master)](https://travis-ci.org/pvoznenko/music-player)
 
-Demo project that show how easy you could implement Front Controller pattern and create your own micro framework for 
+Demo project that show how easy you could implement Front Controller pattern and create your own micro framework for
 API.
 
 Current project imitating music player with music search provided by Spotify API.
