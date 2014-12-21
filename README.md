@@ -2,38 +2,12 @@
 
 [![Build Status](https://magnum.travis-ci.com/fosco-maestro/music-player.svg?token=GBn7ue6jJozTxZP71pzj&branch=master)](https://magnum.travis-ci.com/fosco-maestro/music-player)
 
-## Dear Reviewer,
+Demo project that show how easy you could implement Front Controller pattern and create your own micro framework for 
+API.
 
-Your feedback is really important for me. Please take Your time and write all comments where You think I should do differently,
-so I have chance to improve and do not do the same mistakes in the future. Thank You for Your time!
-
-## Feedback Regarding Code Test
-
-Thank You for such test, it was interesting. Now I wrote my own micro framework on Front Controller pattern :D Hopefully
-my code is understandable and readable enough, I did my best.
-
-I believe You should change recommendation for search API usage, since Spotify Metadata API is deprecated. Also please mentioned
-that for PHP part there should be simple frontend for manual testing of functionality.
-
-Everything else was great! Now I will wait for feedback from You! Hopefully we can work together.
-
-If there are some questions feel free to contact me:
-
-My Skype: p.voznenko
-Email: p.voznenko@gmail.com
-Twitter: pvoznenko
-
-## My Workflow
-
-Current project is stored in my GitHub private repository ([https://github.com/fosco-maestro/music-player](https://github.com/fosco-maestro/music-player)),
-if you would like to see commit history please approach me. Each commit was tested on PHP versions `5.4`, `5.5` and
-`5.6` by commercial version of Travis, so all build is private too.
+Current project imitating music player with music search provided by Spotify API.
 
 ## Technical Decisions
-
-For this test application I chose to focus on PHP part, because long time since I wrote something from scratch on PHP
-without using existing solutions. Also since I believe main goal of this test task to see how I think and code, in my
-GitHub I have enough javascript projects but only one PHP.
 
 I decided to implement Front Controller pattern to encapsulate the typical Request -> Route -> Dispatch -> Response cycles.
 
@@ -45,11 +19,6 @@ Music player application divided on two part:
 
 In this way we can talk about handling serious load, by providing multiple frontend and backend servers with load balance
 (HTTP cache servers and another middleware) in between.
-
-Also in name of scalability and maintainability I would divide search and playlist functionality into two separate
-micro services (in this way applications also fail tolerant - when one fails, another keep working, but I believe you
-need to have monitoring tools to maintain micro services better), but because there are no monitoring tools implemented
-in my micro framework, it will stay in one application.
 
 Since data storage in this case was not really important I chose SQLite, for the production application of course it
 should be changed to something more serious. In name of not using existing libraries, I used standard PHP PDO.
@@ -82,125 +51,6 @@ Request -> Route -> Dispatch -> Controller -> Model -> Entity -> Services (Stora
 ```
 
 When Controller gets all needed data from the Model it generates Response to the client.
-
-## File Structure
-
-Below you can find file structure of following project. From the tree folder `vendor` and `public/components` was excluded
-since they contain external libraries:
-
-```
-.
-├── App -- core library
-│   ├── BaseContainer.php -- representation of Data container
-│   ├── BaseController.php -- representation of Controller
-│   ├── Containers -- folder contain Data containers (not DI Containers!). Used for Data representation
-│   │   ├── CacheDataContainer.php
-│   │   ├── SpotifyAuthContainer.php
-│   │   ├── SpotifySearchAlbumContainer.php
-│   │   ├── SpotifySearchArtistContainer.php
-│   │   ├── SpotifySearchResponseContainer.php
-│   │   ├── SpotifySearchResultContainer.php
-│   │   ├── SpotifySearchTrackContainer.php
-│   │   └── UserDataContainer.php
-│   ├── DataLayer -- representation of Data layer
-│   │   ├── BaseEntity.php
-│   │   ├── BaseModel.php
-│   │   └── Param.php
-│   ├── Dispatcher.php -- Front Controller dispatcher
-│   ├── Exceptions -- Custom exceptions
-│   │   ├── BadRequestException.php
-│   │   ├── NotAcceptableException.php
-│   │   ├── NotFoundException.php
-│   │   └── UnauthorizedException.php
-│   ├── FrontController.php -- Front Controller
-│   ├── GetterSetter.php -- abstract class provides magic getters and setters to the child
-│   ├── Interfaces -- folder with interfaces
-│   │   ├── CacheContainerInterface.php
-│   │   ├── CacheInterface.php
-│   │   ├── ContainerInterface.php
-│   │   ├── CurlInterface.php
-│   │   ├── PDOInterface.php
-│   │   ├── RequestInterface.php
-│   │   ├── ResponseInterface.php
-│   │   ├── RouteInterface.php
-│   │   ├── ServiceInterface.php
-│   │   ├── SpotifyAPIInterface.php
-│   │   └── SpotifySearchEntityInterface.php
-│   ├── Request.php -- representation of request
-│   ├── Response.php -- representation of response
-│   ├── Route.php -- representation of route
-│   ├── Router.php -- Router that dispatch Routes
-│   ├── ServiceContainer.php -- Service Container
-│   ├── Services -- folder with services
-│   │   ├── Cache.php
-│   │   ├── Curl.php
-│   │   ├── DB.php
-│   │   └── SpotifyAPI.php
-│   └── Singleton.php -- abstract class for singleton
-├── README.md
-├── bower.json
-├── composer.json
-├── config
-│   ├── config.php -- API Server configuration
-│   ├── migration
-│   │   └── base.sql -- API Server DB dump
-│   └── routes.php -- API Server routes configuration
-├── phpunit.xml.dist
-├── phpunit.xml.travis.dist
-├── public -- The Frontend server
-│   ├── app
-│   │   ├── app.js
-│   │   ├── controllers
-│   │   │   ├── index.js
-│   │   │   ├── playlist.js
-│   │   │   └── search.js
-│   │   ├── init.js
-│   │   ├── route.js
-│   │   ├── services
-│   │   │   ├── playlist.js
-│   │   │   ├── search.js
-│   │   │   ├── user.js
-│   │   │   └── userAuth.js
-│   │   └── templates
-│   │       ├── playlist.html
-│   │       └── search.html
-│   ├── index.html
-│   └── style
-│       └── css
-│           └── style.css
-├── server
-│   └── index.php -- entry point to the API Server
-├── src -- folder with our API representation
-│   └── MusicPlayer
-│       ├── Controllers
-│       │   ├── PlaylistController.php -- controller responsible for playlist functionality
-│       │   ├── SearchController.php -- controller responsible for search functionality
-│       │   └── UsersController.php -- controller responsible for user functionality
-│       ├── Entities -- contain interfaces to communicate with data source (store data in storage)
-│       │   ├── PlaylistEntity.php
-│       │   ├── SongsEntity.php
-│       │   └── UsersEntity.php
-│       ├── Models -- model representation, use caching layer here
-│       │   ├── PlaylistModel.php
-│       │   ├── SearchModel.php
-│       │   ├── SongsModel.php
-│       │   └── UsersModel.php
-│       └── MusicPlayerAuthController.php -- controller for private API
-├── tests -- folder contain test
-│   ├── Tests
-│   │   ├── Base
-│   │   │   └── WebServerTest.php
-│   │   ├── BaseWebTestClass.php
-│   │   ├── MusicPlayer
-│   │   │   ├── PlaylistBehaviourTest.php
-│   │   │   ├── SearchBehaviourTest.php
-│   │   │   └── UsersBehaviourTest.php
-│   │   └── PreTest.php
-│   └── bootstrap.php
-└── tmp - folder for temporary files, should be writable
-
-26 directories, 82 files
-```
 
 ## System Requirements
 
@@ -267,13 +117,7 @@ $ ./vendor/bin/phpunit -c phpunit.xml.travis.dist
 For tests I used [PHPUnit](https://phpunit.de/) and [Guzzle](http://guzzle.readthedocs.org/en/latest/) HTTP
 client (for testing API).
 
-## The Frontend Configuration
-
-At the file `public/app/app.js` you should see constant `ApiUrl` - please set it to yours correct API Server address.
-
 ## Setup The Frontend
-
-(Since in test task you asking to have all libraries out of the box (packed in archive), this step could be skipped)
 
 Before running Frontend you need to install dependencies with [Bower](http://bower.io/) by using following command:
 
@@ -346,17 +190,16 @@ On page reload The Frontend will authorize you in API server as new user, so all
 be lost. It made in name of less manual work with registration and login, it fakes authorization, since The Frontend
 exists for testing purpose.
 
-Please do not judge on how it looks like since it exists only for manual test purposes. You could see not beautiful CSS, etc.
-I did not focused on this part of test task, spend all effort on server side. Thank You for Your understanding.
+Please do not judge on how it looks like since it exists only for manual test purposes.
 
 ## API Server
 
 API Server covers goal of this test task:
 
-- Perform track/artist/album searches;
-- Maintain playlists:
--- CRUD (Create, Remove, Update, Delete);
--- Add/remove tracks.
+1. Perform track/artist/album searches;
+2. Maintain playlist:
+⋅⋅* CRUD (Create, Remove, Update, Delete);
+⋅⋅* Add/remove tracks.
 
 API Server contain public API and private that requires authentication first.
 
@@ -763,3 +606,5 @@ will get response with code `401`;
 ## Copyright
 
 Copyright (C) 2014 Pavlo Voznenko.
+
+Distributed under the MIT License.
