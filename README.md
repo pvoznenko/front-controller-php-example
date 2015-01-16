@@ -1,4 +1,4 @@
-# Music-player
+# Front Controller PHP Example - Music Player
 
 [![Build Status](https://travis-ci.org/pvoznenko/music-player.svg?branch=master)](https://travis-ci.org/pvoznenko/music-player)
 
