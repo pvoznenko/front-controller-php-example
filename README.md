@@ -1,6 +1,6 @@
 # Front Controller PHP Example - Music Player
 
-[![Build Status](https://travis-ci.org/pvoznenko/music-player.svg?branch=master)](https://travis-ci.org/pvoznenko/music-player)
+[![Build Status](https://travis-ci.org/pvoznenko/front-controller-php-example.svg?branch=master)](https://travis-ci.org/pvoznenko/front-controller-php-example)
 
 Demo project that show how easy you could implement Front Controller pattern and create your own micro framework for
 API.
